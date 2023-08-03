@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/combine"
+        android:icon="@drawable/ic_merge"
+        android:title="@string/combine"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/random"
+        android:icon="@drawable/ic_auto_fix"
+        android:title="@string/randomize"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/shiny"
+        android:icon="@drawable/ic_awesome"
+        android:title="@string/shiny"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/guess"
+        android:icon="@drawable/ic_quiz"
+        android:title="@string/guesser"
+        app:showAsAction="always"/>
+
+</menu>
