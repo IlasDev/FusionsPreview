@@ -3,11 +3,10 @@ package com.gmail.ilasdeveloper.fusionspreview.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
@@ -21,7 +20,6 @@ import com.gmail.ilasdeveloper.fusionspreview.fragments.GuesserFragment;
 import com.gmail.ilasdeveloper.fusionspreview.fragments.RandomFragment;
 import com.gmail.ilasdeveloper.fusionspreview.fragments.ShinyFragment;
 import com.gmail.ilasdeveloper.fusionspreview.models.CustomFragment;
-import com.gmail.ilasdeveloper.fusionspreview.utils.UtilsCollection;
 import com.google.android.material.elevation.SurfaceColors;
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;
@@ -63,6 +61,19 @@ public class MainActivity extends AppCompatActivity {
         com.gmail.ilasdeveloper.fusionspreview.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
+
+        ViewCompat.setOnApplyWindowInsetsListener(getWindow().getDecorView().getRootView(), new OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
+                if (imeVisible)
+                    binding.bottomNavigation.setVisibility(View.GONE);
+                else
+                    binding.bottomNavigation.setVisibility(View.VISIBLE);
+                return insets;
+            }
+        });
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
 
