@@ -3,10 +3,8 @@ package com.gmail.ilasdeveloper.fusionspreview.ui.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.view.WindowInsetsController;
+import android.view.MotionEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -17,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.BaseFragment;
 import com.gmail.ilasdeveloper.fusionspreview.databinding.ActivityMainBinding;
 import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.CombineFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.GuesserFragment;
@@ -68,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
-
 
         // Breaks everything
         /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -205,5 +203,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         restartActivity();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (activeFragment instanceof BaseFragment) {
+            ((BaseFragment) activeFragment).hideKeyboard(ev);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

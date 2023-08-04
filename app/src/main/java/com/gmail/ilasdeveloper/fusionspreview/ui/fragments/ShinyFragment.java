@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
-import com.gmail.ilasdeveloper.fusionspreview.data.models.CustomFragment;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.BaseFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.widgets.TextViewGroup;
 import com.gmail.ilasdeveloper.fusionspreview.utils.MonDownloader;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 
-public class ShinyFragment extends CustomFragment {
+public class ShinyFragment extends BaseFragment {
 
     boolean[] busy;
     private ArrayList<String> monsList = null;

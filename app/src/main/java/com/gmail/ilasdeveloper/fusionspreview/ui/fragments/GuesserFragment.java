@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
-import com.gmail.ilasdeveloper.fusionspreview.data.models.CustomFragment;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.BaseFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.widgets.TextViewGroup;
 import com.gmail.ilasdeveloper.fusionspreview.utils.ImageUrlValidator;
 import com.gmail.ilasdeveloper.fusionspreview.utils.MonDownloader;
@@ -21,7 +21,7 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.util.ArrayList;
 
-public class GuesserFragment extends CustomFragment {
+public class GuesserFragment extends BaseFragment {
 
     private boolean busy;
     private ArrayList<String> monsList = null;

@@ -12,8 +12,8 @@ android {
         applicationId "com.gmail.ilasdeveloper.fusionspreview"
         minSdk 26
         targetSdk 33
-        versionCode 3
-        versionName "1.1"
+        versionCode 5
+        versionName "1.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

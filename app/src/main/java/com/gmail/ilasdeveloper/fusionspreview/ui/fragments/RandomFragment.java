@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
-import com.gmail.ilasdeveloper.fusionspreview.data.models.CustomFragment;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.BaseFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.widgets.TextViewGroup;
 import com.gmail.ilasdeveloper.fusionspreview.utils.MonDownloader;
 import com.gmail.ilasdeveloper.fusionspreview.utils.UtilsCollection;
@@ -17,7 +17,7 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.util.ArrayList;
 
-public class RandomFragment extends CustomFragment {
+public class RandomFragment extends BaseFragment {
 
     private ArrayList<String> monsList = null;
     private GridLayout monsLayout = null;

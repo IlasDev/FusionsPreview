@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.gmail.ilasdeveloper.fusionspreview.ui.activities.MainActivity;
 
-public class CustomFragment extends Fragment {
+public class BaseFragment extends Fragment {
 
     protected View mView;
 
