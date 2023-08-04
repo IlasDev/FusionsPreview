@@ -24,12 +24,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.ilasdeveloper.fusionspreview.R;
-import com.gmail.ilasdeveloper.fusionspreview.models.Pokemon;
 import com.gmail.ilasdeveloper.fusionspreview.data.PokemonData;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.Pokemon;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.squareup.picasso.Cache;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -391,16 +390,22 @@ public class MonDownloader {
                     Log.d("MARIO", "" + ShinyUtils.calcShinyHue(headId, bodyId, true, false));
                     Log.d("MARIO", "" + ShinyUtils.calcShinyHue(headId, bodyId, false, true));
 
+                    int index = 0;
                     for (Bitmap nBitmap : bitmaps) {
                         View view = inflater.inflate(R.layout.layout_mons, monsLayout, false);
                         TextView nameView = view.findViewById(R.id.name);
-                        nameView.setVisibility(View.GONE);
+                        String text = (index == 0) ? context.getResources().getString(R.string.non_shiny)
+                                : (index == 1) ? context.getResources().getString(R.string.head_uppercase)
+                                : (index == 2) ? context.getResources().getString(R.string.body_uppercase)
+                                : (index == 3) ? context.getResources().getString(R.string.head_uppercase)
+                                       + " + " + context.getResources().getString(R.string.body_uppercase)
+                                : "";
+                        nameView.setText(text);
                         ImageView sprite = view.findViewById(R.id.sprite);
-
                         sprite.setImageBitmap(nBitmap);
-
                         view.setVisibility(View.VISIBLE);
                         monsLayout.addView(view);
+                        index++;
                     }
 
                     busy[0] = false;

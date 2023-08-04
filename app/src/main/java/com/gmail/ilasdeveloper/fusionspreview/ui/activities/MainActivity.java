@@ -1,26 +1,31 @@
-package com.gmail.ilasdeveloper.fusionspreview.activities;
+package com.gmail.ilasdeveloper.fusionspreview.ui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsetsController;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.splashscreen.SplashScreen;
+import androidx.core.view.WindowCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
 import com.gmail.ilasdeveloper.fusionspreview.databinding.ActivityMainBinding;
-import com.gmail.ilasdeveloper.fusionspreview.fragments.CombineFragment;
-import com.gmail.ilasdeveloper.fusionspreview.fragments.GuesserFragment;
-import com.gmail.ilasdeveloper.fusionspreview.fragments.RandomFragment;
-import com.gmail.ilasdeveloper.fusionspreview.fragments.ShinyFragment;
-import com.gmail.ilasdeveloper.fusionspreview.models.CustomFragment;
+import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.CombineFragment;
+import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.GuesserFragment;
+import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.RandomFragment;
+import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.SettingsFragment;
+import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.ShinyFragment;
+import com.gmail.ilasdeveloper.fusionspreview.ui.themes.Theming;
+import com.gmail.ilasdeveloper.fusionspreview.ui.themes.enums.AppTheme;
 import com.google.android.material.elevation.SurfaceColors;
-import com.squareup.picasso.Cache;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,17 +40,20 @@ public class MainActivity extends AppCompatActivity {
     private GuesserFragment guesserFragment;
     private RandomFragment randomFragment;
     private ShinyFragment shinyFragment;
-    private CustomFragment activeFragment;
+    private SettingsFragment settingsFragment;
+    private Fragment activeFragment;
     private FragmentManager fragmentManager;
     private ArrayList<String> monsList;
     private int lastId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        updateTheme();
+
         super.onCreate(savedInstanceState);
 
-        Picasso picasso = new Picasso.Builder(this).memoryCache(Cache.NONE).build();
-        Picasso.setSingletonInstance(picasso);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
@@ -53,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         guesserFragment = new GuesserFragment();
         randomFragment = new RandomFragment();
         shinyFragment = new ShinyFragment();
+        settingsFragment = new SettingsFragment();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -60,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+
+        // Breaks everything
+        /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             View decorView = getWindow().getDecorView();
             WindowInsetsController windowInsetsController = decorView.getWindowInsetsController();
             windowInsetsController.addOnControllableInsetsChangedListener((windowInsetsController1, i) -> {
@@ -69,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     binding.bottomNavigation.setVisibility(View.VISIBLE);
             });
-        }
+        } */
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
 
@@ -82,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
                     updateFragment(guesserFragment);
                 } else if (item.getItemId() == R.id.shiny) {
                     updateFragment(shinyFragment);
+                } else if (item.getItemId() == R.id.settings) {
+                    updateFragment(settingsFragment);
                 }
                 lastId = item.getItemId();
                 return true;
@@ -94,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 .add(R.id.frame_layout, guesserFragment, guesserFragment.getClass().getName()).hide(guesserFragment)
                 .add(R.id.frame_layout, randomFragment, randomFragment.getClass().getName()).hide(randomFragment)
                 .add(R.id.frame_layout, shinyFragment, shinyFragment.getClass().getName()).hide(shinyFragment)
+                .add(R.id.frame_layout, settingsFragment, settingsFragment.getClass().getName()).hide(settingsFragment)
                 .commit();
 
         try {
@@ -113,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateFragment(CustomFragment fragment) {
+    private void updateFragment(Fragment fragment) {
         if (activeFragment == null)
             activeFragment = guesserFragment;
         fragmentManager.beginTransaction().hide(activeFragment).show(fragment).commit();
@@ -145,6 +159,39 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return output;
+    }
+
+    public void updateTheme() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String selectedTheme = prefs.getString("theme_scheme", AppTheme.DEFAULT.name());
+        setTheme(Theming.getAppThemeFromName(selectedTheme).getThemeResId());
+        updateMode();
+    }
+
+    public void updateMode() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String selectedNightMode = prefs.getString("theme_mode", "system");
+        updateMode(selectedNightMode);
+    }
+
+    public void updateMode(String selectedNightMode) {
+        switch (selectedNightMode) {
+            case "system":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+            case "light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+        };
+    }
+
+    @Override
+    public void recreate() {
+        finish();
+        startActivity(getIntent());
     }
 
     @SuppressLint("UnsafeIntentLaunch")

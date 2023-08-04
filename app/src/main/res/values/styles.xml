@@ -61,6 +61,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="enableEdgeToEdge">true</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="TextLinearLayout">
@@ -79,5 +80,29 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
+    </style>
+
+    <!-- Fixes -->
+
+    <style name="PreferenceThemeOverlay.FusionsPreview">
+        <item name="android:layout">@layout/fragment_settings</item>
+        <item name="preferenceCategoryTitleTextAppearance">?attr/textAppearanceBodyMedium</item>
+        <item name="singleLineTitle">false</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="Preference.SwitchPreferenceCompat.M3" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="android:widgetLayout">@layout/preference_widget_material_switch</item>
+    </style>
+
+    <style name="Preference.ThemeChooser" parent="Preference.Material">
+        <item name="android:layout">@layout/preference_theme</item>
+        <item name="android:selectable">false</item>
+    </style>
+
+    <style name="ThemeOverlay.FusionsPreview.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:layout">@layout/m3_alert_dialog</item>
+        <item name="android:background">@drawable/m3_popup_background</item>
+        <item name="dialogCornerRadius">@dimen/m3_alert_dialog_corner_size</item>
     </style>
 </resources>

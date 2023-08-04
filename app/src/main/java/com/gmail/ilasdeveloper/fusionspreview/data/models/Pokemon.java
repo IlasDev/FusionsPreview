@@ -1,4 +1,4 @@
-package com.gmail.ilasdeveloper.fusionspreview.models;
+package com.gmail.ilasdeveloper.fusionspreview.data.models;
 
 public class Pokemon {
     private String name;

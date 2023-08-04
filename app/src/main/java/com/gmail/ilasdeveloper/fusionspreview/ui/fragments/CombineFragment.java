@@ -1,4 +1,4 @@
-package com.gmail.ilasdeveloper.fusionspreview.fragments;
+package com.gmail.ilasdeveloper.fusionspreview.ui.fragments;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 
+import androidx.core.view.WindowCompat;
+
 import com.gmail.ilasdeveloper.fusionspreview.R;
-import com.gmail.ilasdeveloper.fusionspreview.models.CustomFragment;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.CustomFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.widgets.TextViewGroup;
 import com.gmail.ilasdeveloper.fusionspreview.utils.MonDownloader;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;

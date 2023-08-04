@@ -25,4 +25,10 @@
         android:title="@string/guesser"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_tools"
+        android:title="@string/settings"
+        app:showAsAction="always"/>
+
 </menu>

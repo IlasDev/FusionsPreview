@@ -1,4 +1,4 @@
-package com.gmail.ilasdeveloper.fusionspreview.models;
+package com.gmail.ilasdeveloper.fusionspreview.data.models;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
-import com.gmail.ilasdeveloper.fusionspreview.activities.MainActivity;
+import com.gmail.ilasdeveloper.fusionspreview.ui.activities.MainActivity;
 
 public class CustomFragment extends Fragment {
 

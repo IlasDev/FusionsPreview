@@ -12,8 +12,8 @@ android {
         applicationId "com.gmail.ilasdeveloper.fusionspreview"
         minSdk 26
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,12 +34,15 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    dataBinding{
+    dataBinding {
         enabled = true
     }
 }
 
 dependencies {
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
@@ -48,3 +51,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
+
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'

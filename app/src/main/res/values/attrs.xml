@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShapeView">
+        <attr name="strokeWidth" />
+        <attr name="strokeColor" />
+        <attr name="cornerSize" />
+        <attr name="cornerSizeTopLeft" />
+        <attr name="cornerSizeTopRight" />
+        <attr name="cornerSizeBottomLeft" />
+        <attr name="cornerSizeBottomRight" />
+        <attr name="themeChooserPreferenceStyle" />
+    </declare-styleable>
+    <attr name="themeChooserPreferenceStyle" />
+</resources>

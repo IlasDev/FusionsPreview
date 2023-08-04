@@ -1,4 +1,4 @@
-package com.gmail.ilasdeveloper.fusionspreview.fragments;
+package com.gmail.ilasdeveloper.fusionspreview.ui.fragments;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
-import com.gmail.ilasdeveloper.fusionspreview.models.CustomFragment;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.CustomFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.widgets.TextViewGroup;
 import com.gmail.ilasdeveloper.fusionspreview.utils.ImageUrlValidator;
 import com.gmail.ilasdeveloper.fusionspreview.utils.MonDownloader;

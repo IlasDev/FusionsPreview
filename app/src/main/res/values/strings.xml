@@ -25,4 +25,21 @@
     <string name="shiny">Shiny</string>
     <string name="guesser">Guesser</string>
     <string name="shiny_preview">Shiny Preview</string>
+
+    <!-- Themes -->
+    <string name="theme_monet">Dynamic</string>
+    <string name="theme_greenapple">Green Apple</string>
+    <string name="theme_lavender">Lavender</string>
+    <string name="theme_midnightdusk">Midnight Dusk</string>
+    <string name="theme_strawberrydaiquiri">Strawberry Daiquiri</string>
+    <string name="theme_tako">Tako</string>
+    <string name="theme_tealturquoise">Teal &amp; Turquoise</string>
+    <string name="theme_yinyang">Yin &amp; Yang</string>
+    <string name="theme_yotsuba">Yotsuba</string>
+    <string name="theme_tidalwave">Tidal Wave</string>
+    <string name="label_default">Default</string>
+    <string name="settings">Settings</string>
+    <string name="head_uppercase">Head</string>
+    <string name="non_shiny">Non-shiny</string>
+    <string name="body_uppercase">Body</string>
 </resources>

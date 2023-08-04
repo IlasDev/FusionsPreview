@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="theme_mode">
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </array>
+    <array name="theme_mode_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </array>
+</resources>

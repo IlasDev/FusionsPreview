@@ -1,6 +1,6 @@
 package com.gmail.ilasdeveloper.fusionspreview.data;
 
-import com.gmail.ilasdeveloper.fusionspreview.models.Pokemon;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.Pokemon;
 
 import java.util.ArrayList;
 
