@@ -2,15 +2,13 @@ package com.gmail.ilasdeveloper.fusionspreview.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowInsetsController;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
@@ -58,22 +56,20 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
 
-        com.gmail.ilasdeveloper.fusionspreview.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
 
-        ViewCompat.setOnApplyWindowInsetsListener(getWindow().getDecorView().getRootView(), new OnApplyWindowInsetsListener() {
-            @NonNull
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                boolean imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime());
-                if (imeVisible)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            View decorView = getWindow().getDecorView();
+            WindowInsetsController windowInsetsController = decorView.getWindowInsetsController();
+            windowInsetsController.addOnControllableInsetsChangedListener((windowInsetsController1, i) -> {
+                if (i == 9)
                     binding.bottomNavigation.setVisibility(View.GONE);
                 else
                     binding.bottomNavigation.setVisibility(View.VISIBLE);
-                return insets;
-            }
-        });
+            });
+        }
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
 
