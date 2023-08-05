@@ -33,7 +33,7 @@
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/first_option"
-                    android:hint="@string/first_pokemon"
+                    android:hint="@string/head_pokemon"
                     style="@style/AutoCompleterTextView" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -45,7 +45,7 @@
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/second_option"
-                    android:hint="@string/second_pokemon"
+                    android:hint="@string/body_pokemon"
                     style="@style/AutoCompleterTextView" />
 
             </com.google.android.material.textfield.TextInputLayout>
