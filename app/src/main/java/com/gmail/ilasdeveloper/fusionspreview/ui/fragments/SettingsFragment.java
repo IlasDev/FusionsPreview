@@ -49,6 +49,8 @@ public class SettingsFragment extends PreferenceFragmentCompat   {
                             "FusionsPreview " + version  + "\n" +
                             "Build type: " + BuildConfig.BUILD_TYPE + "\n\n" +
                             "Source code: https://github.com/IlasDev/FusionsPreview" + "\n\n" +
+                            "Custom sprites: https://github.com/infinitefusion/sprites" + "\n" +
+                            "Generated sprites: https://github.com/Aegide/autogen-fusion-sprites" + "\n\n" +
                             "Developer's note: Please donate. I'm starving. Also this is a early" +
                                     " preview of the application. Much has to be improved, but" +
                                     " I'm lazy, so I'll take my time."

@@ -25,8 +25,8 @@
 
         <Preference
             android:key="about"
-            android:title="About me"
-            android:summary="Learn more about me"
+            android:title="About"
+            android:summary="Learn more about the app"
             android:icon="@drawable/ic_info"/>
 
         <Preference
