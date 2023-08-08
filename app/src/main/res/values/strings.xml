@@ -1,18 +1,18 @@
 <resources>
     <string name="app_name">FusionsPreview</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="first_pokemon">First Pokémon</string>
-    <string name="second_pokemon">Second Pokémon</string>
+    <string name="first_pokemon">First creature</string>
+    <string name="second_pokemon">Second creature</string>
     <string name="fuse">Fuse</string>
-    <string name="head_pokemon">Head Pokémon</string>
-    <string name="body_pokemon">Body Pokémon</string>
+    <string name="head_pokemon">Head creature</string>
+    <string name="body_pokemon">Body creature</string>
     <string name="check">Check</string>
     <string name="custom_sprites_only">Custom sprites only (takes more time to load the sprite)</string>
     <string name="surrender">Surrender</string>
     <string name="current_streak">Current streak:\ </string>
     <string name="_0">0</string>
     <string name="attempts_on_this_one">Attempts on this one:\ </string>
-    <string name="choose_a_pokemon">Choose a Pokémon</string>
+    <string name="choose_a_pokemon">Choose a creature</string>
     <string name="randomize_everything">Randomize everything</string>
     <string name="randomize">Randomize</string>
     <string name="name">Name</string>

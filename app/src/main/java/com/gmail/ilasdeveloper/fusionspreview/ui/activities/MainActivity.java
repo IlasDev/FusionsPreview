@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -15,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
+import com.gmail.ilasdeveloper.fusionspreview.csv.CsvIndexer;
 import com.gmail.ilasdeveloper.fusionspreview.data.models.BaseFragment;
 import com.gmail.ilasdeveloper.fusionspreview.databinding.ActivityMainBinding;
 import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.CombineFragment;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private ArrayList<String> monsList;
     private int lastId = -1;
+    private CsvIndexer csvIndexer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +112,11 @@ public class MainActivity extends AppCompatActivity {
                 .add(R.id.frame_layout, settingsFragment, settingsFragment.getClass().getName()).hide(settingsFragment)
                 .commit();
 
+        new Thread(() -> csvIndexer = CsvIndexer.createInstance(binding.getRoot().getContext(), "https://raw.githubusercontent.com/infinitefusion/sprites/main/Sprite%20Credits.csv")).start();
+
         try {
             CompletableFuture.runAsync(() -> {
                 monsList = retrieveMons();
-
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("monsList", monsList);
                 combineFragment.setArguments(bundle);
@@ -152,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ignored) {
         }
 
         return output;
@@ -192,17 +196,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(getIntent());
     }
 
-    @SuppressLint("UnsafeIntentLaunch")
-    private void restartActivity() {
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        restartActivity();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     @Override
@@ -211,5 +210,9 @@ public class MainActivity extends AppCompatActivity {
             ((BaseFragment) activeFragment).hideKeyboard(ev);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    public CsvIndexer getCsvIndexer() {
+        return csvIndexer;
     }
 }

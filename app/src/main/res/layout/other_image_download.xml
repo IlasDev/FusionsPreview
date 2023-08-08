@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/invisibleLayout"
+    style="@style/Widget.Material3.CardView.Elevated"
+    android:layout_width="512px"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            style="@style/Widget.Material3.CardView.Outlined">
+
+            <ImageView
+                android:id="@+id/sprite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextDataNormal"
+                android:text="Head: "/>
+
+            <TextView
+                android:id="@+id/headName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextDataBold"
+                android:text="Mimikyu-disguised"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextDataNormal"
+                android:text="Body: "/>
+
+            <TextView
+                android:id="@+id/bodyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextDataBold"
+                android:text="Mimikyu-disguised"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

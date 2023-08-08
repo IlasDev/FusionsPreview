@@ -4,26 +4,41 @@ import static com.gmail.ilasdeveloper.fusionspreview.utils.UtilsCollection.index
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.ilasdeveloper.fusionspreview.R;
+import com.gmail.ilasdeveloper.fusionspreview.csv.CsvIndexer;
 import com.gmail.ilasdeveloper.fusionspreview.data.PokemonData;
 import com.gmail.ilasdeveloper.fusionspreview.data.models.Pokemon;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -34,7 +49,10 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -84,6 +102,8 @@ public class MonDownloader {
 
                     Picasso.get().load(url).networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(newSprite);
 
+                    newSprite.setOnClickListener(view -> expandImage(newSprite, index1 + "." + index2 + url.charAt(url.length() - 5), monsList));
+
                     newView.setVisibility(View.VISIBLE);
                     monsLayout.addView(newView);
                 }
@@ -107,7 +127,7 @@ public class MonDownloader {
                 if (isValid) {
                     Picasso.get().load(imageUrl).networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(sprite);
                 } else {
-                    String backupImageUrl = "https://raw.githubusercontent.com/Aegide/autogen-fusion-sprites/master/Battlers/" + index1 + "/" + index1 + "." + index2 + ".png";
+                    String backupImageUrl = "https://raw.githubusercontent.com/Scott-Bonner/autogen-fusion-sprites/master/Battlers/" + index1 + "/" + index1 + "." + index2 + ".png";
                     Picasso.get().load(backupImageUrl).networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(sprite);
                 }
             });
@@ -134,6 +154,8 @@ public class MonDownloader {
         int indexOfHead = UtilsCollection.indexOfIgnoreCase(monsList, head);
         int indexOfBody = UtilsCollection.indexOfIgnoreCase(monsList, body);
 
+        sprite.setOnClickListener(view -> expandImage(sprite, (indexOfHead + 1) + "." +  (indexOfBody + 1), monsList));
+
         name.setText(head + "/" + body);
         name.setLineSpacing(0, 0.85f);
         id.setText("#" + ((indexOfHead + 1) * 420 + (indexOfHead + 1)) + " (" + (indexOfHead + 1) + "." + (indexOfBody + 1) + ")");
@@ -148,46 +170,43 @@ public class MonDownloader {
         final String[][] bodyTypes = new String[1][1];
         final String[][] combinedTypes = new String[1][1];
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    PokeAPI.getPokemonAsync(head).thenAccept(headResponse -> {
-                        headStats[0] = extractStats(headResponse);
-                        headTypes[0] = extractTypes(headResponse);
-                        try {
-                            PokeAPI.getPokemonAsync(body).thenAccept(bodyResponse -> {
-                                bodyStats[0] = extractStats(bodyResponse);
-                                bodyTypes[0] = extractTypes(bodyResponse);
-                                combinedStats[0] = getCombinedStats(head, body, headStats[0], bodyStats[0]);
-                                combinedTypes[0] = getCombinedTypes(head, body, headTypes[0], bodyTypes[0]);
-                            }).get();
-                        } catch (ExecutionException | InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }).get();
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                getActivity(context).runOnUiThread(() -> {
-                    statsLayout.getChildAt(1).setVisibility(View.GONE);
-                    LayoutInflater inflater = LayoutInflater.from(bottomSheetDialog.getContext());
-                    for (int i = 0; i < 7; i++) {
-                        View view = inflater.inflate(R.layout.fragment_sheet_info_stat, statsLayout, false);
-                        TextView statName = view.findViewById(R.id.stat_name);
-                        LinearProgressIndicator statProgress = view.findViewById(R.id.stat_progress);
-                        statName.setText(PokeAPI.STATS_NAMES[i] + ": " + combinedStats[0][i]);
-                        if (i < 6) statProgress.setProgress(100 * combinedStats[0][i] / 255);
-                        else statProgress.setProgress(100 * combinedStats[0][i] / 1530);
-                        statProgress.setTrackColor(ContextCompat.getColor(context, com.google.android.material.R.color.material_on_surface_stroke));
-                        statsLayout.addView(view);
+        new Thread(() -> {
+            try {
+                PokeAPI.getPokemonAsync(head).thenAccept(headResponse -> {
+                    headStats[0] = extractStats(headResponse);
+                    headTypes[0] = extractTypes(headResponse);
+                    try {
+                        PokeAPI.getPokemonAsync(body).thenAccept(bodyResponse -> {
+                            bodyStats[0] = extractStats(bodyResponse);
+                            bodyTypes[0] = extractTypes(bodyResponse);
+                            combinedStats[0] = getCombinedStats(head, body, headStats[0], bodyStats[0]);
+                            combinedTypes[0] = getCombinedTypes(head, body, headTypes[0], bodyTypes[0]);
+                        }).get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
-                    String typeText = "Types: " + UtilsCollection.capitalizeFirstLetter(combinedTypes[0][0]);
-                    if (combinedTypes[0][1] != null)
-                        typeText += "/" + UtilsCollection.capitalizeFirstLetter(combinedTypes[0][1]);
-                    type.setText(typeText);
-                });
+                }).get();
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
             }
+            getActivity(context).runOnUiThread(() -> {
+                statsLayout.getChildAt(1).setVisibility(View.GONE);
+                LayoutInflater inflater = LayoutInflater.from(bottomSheetDialog.getContext());
+                for (int i = 0; i < 7; i++) {
+                    View view = inflater.inflate(R.layout.fragment_sheet_info_stat, statsLayout, false);
+                    TextView statName = view.findViewById(R.id.stat_name);
+                    LinearProgressIndicator statProgress = view.findViewById(R.id.stat_progress);
+                    statName.setText(PokeAPI.STATS_NAMES[i] + ": " + combinedStats[0][i]);
+                    if (i < 6) statProgress.setProgress(100 * combinedStats[0][i] / 255);
+                    else statProgress.setProgress(100 * combinedStats[0][i] / 1530);
+                    statProgress.setTrackColor(ContextCompat.getColor(context, com.google.android.material.R.color.material_on_surface_stroke));
+                    statsLayout.addView(view);
+                }
+                String typeText = "Types: " + UtilsCollection.capitalizeFirstLetter(combinedTypes[0][0]);
+                if (combinedTypes[0][1] != null)
+                    typeText += "/" + UtilsCollection.capitalizeFirstLetter(combinedTypes[0][1]);
+                type.setText(typeText);
+            });
         }).start();
     }
 
@@ -249,7 +268,7 @@ public class MonDownloader {
             if (isValid) {
                 Picasso.get().load(imageUrl).networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(spriteView);
             } else {
-                String backupImageUrl = "https://raw.githubusercontent.com/Aegide/autogen-fusion-sprites/master/Battlers/" + indexes[0] + "/" + indexes[0] + "." + indexes[1] + ".png";
+                String backupImageUrl = "https://raw.githubusercontent.com/Scott-Bonner/autogen-fusion-sprites/master/Battlers/" + indexes[0] + "/" + indexes[0] + "." + indexes[1] + ".png";
                 Picasso.get().load(backupImageUrl).networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(spriteView);
             }
         });
@@ -378,6 +397,26 @@ public class MonDownloader {
             return errors;
 
         final String[] imageUrl = {"https://raw.githubusercontent.com/infinitefusion/sprites/main/CustomBattlers/" + headId + "." + bodyId + ".png"};
+
+        ImageView[] imageViews = new ImageView[4];
+
+        int index = 0;
+        for (Bitmap nBitmap : bitmaps) {
+            View view = inflater.inflate(R.layout.layout_mons, monsLayout, false);
+            TextView nameView = view.findViewById(R.id.name);
+            String text = (index == 0) ? context.getResources().getString(R.string.non_shiny)
+                    : (index == 1) ? context.getResources().getString(R.string.head_uppercase)
+                    : (index == 2) ? context.getResources().getString(R.string.body_uppercase)
+                    : (index == 3) ? context.getResources().getString(R.string.head_uppercase)
+                    + " + " + context.getResources().getString(R.string.body_uppercase)
+                    : "";
+            nameView.setText(text);
+            imageViews[index] = view.findViewById(R.id.sprite);
+            view.setVisibility(View.VISIBLE);
+            monsLayout.addView(view);
+            index++;
+        }
+
         Target target = new Target() {
 
             @Override
@@ -387,24 +426,11 @@ public class MonDownloader {
                     bitmaps[1] = ShinyUtils.hueShiftBitmap(bitmap, ShinyUtils.calcShinyHue(headId, bodyId, true, false));
                     bitmaps[2] = ShinyUtils.hueShiftBitmap(bitmap, ShinyUtils.calcShinyHue(headId, bodyId, false, true));
                     bitmaps[3] = ShinyUtils.hueShiftBitmap(bitmap, ShinyUtils.calcShinyHue(headId, bodyId, true, true));
-                    Log.d("MARIO", "" + ShinyUtils.calcShinyHue(headId, bodyId, true, false));
-                    Log.d("MARIO", "" + ShinyUtils.calcShinyHue(headId, bodyId, false, true));
 
                     int index = 0;
-                    for (Bitmap nBitmap : bitmaps) {
-                        View view = inflater.inflate(R.layout.layout_mons, monsLayout, false);
-                        TextView nameView = view.findViewById(R.id.name);
-                        String text = (index == 0) ? context.getResources().getString(R.string.non_shiny)
-                                : (index == 1) ? context.getResources().getString(R.string.head_uppercase)
-                                : (index == 2) ? context.getResources().getString(R.string.body_uppercase)
-                                : (index == 3) ? context.getResources().getString(R.string.head_uppercase)
-                                       + " + " + context.getResources().getString(R.string.body_uppercase)
-                                : "";
-                        nameView.setText(text);
-                        ImageView sprite = view.findViewById(R.id.sprite);
-                        sprite.setImageBitmap(nBitmap);
-                        view.setVisibility(View.VISIBLE);
-                        monsLayout.addView(view);
+                    for (ImageView imageView : imageViews) {
+                        imageView.setImageBitmap(bitmaps[index]);
+                        imageView.setOnClickListener(view -> expandImage(imageView, headId + "." + bodyId, monsList));
                         index++;
                     }
 
@@ -413,17 +439,101 @@ public class MonDownloader {
             }
 
             @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) { }
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                monsLayout.removeAllViews();
+                busy[0] = false;
+            }
 
             @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) { }
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
         };
 
         ImageUrlValidator.validateImageUrl(imageUrl[0], isValid -> {
             if (!isValid)
-                imageUrl[0] = "https://raw.githubusercontent.com/Aegide/autogen-fusion-sprites/master/Battlers/" + headId + "/" + headId + "." + bodyId + ".png";
+                imageUrl[0] = "https://raw.githubusercontent.com/Scott-Bonner/autogen-fusion-sprites/master/Battlers/" + headId + "/" + headId + "." + bodyId + ".png";
             Picasso.get().load(imageUrl[0]).networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(target);
         });
         return errors;
     }
+
+    @SuppressLint("SetTextI18n")
+    public static void expandImage(ImageView imageView, String name, ArrayList<String> monsList) {
+        final Dialog dialog = new Dialog(imageView.getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setContentView(R.layout.dialog_expandable_image);
+
+        String author = CsvIndexer.getInstance().search(name);
+        if (author == null)
+            author = "Unknown";
+
+        ImageView expandedImageView = dialog.findViewById(R.id.expandedImageView);
+        Button downloadButton = dialog.findViewById(R.id.downloadButton);
+        TextView fusionNameView = dialog.findViewById(R.id.fusionName);
+        TextView fusionIdView = dialog.findViewById(R.id.fusionId);
+        TextView authorNameView = dialog.findViewById(R.id.authorName);
+        fusionNameView.setText(monsList.get(Integer.parseInt(name.split("\\.")[0])) + "/" + monsList.get(Integer.parseInt(String.valueOf(name.split("\\.")[1].charAt(0)))));
+        fusionIdView.setText(name);
+        authorNameView.setText(author);
+
+        expandedImageView.setImageDrawable(imageView.getDrawable());
+
+        downloadButton.setOnClickListener(v -> {
+            Bitmap bitmap = ((BitmapDrawable) expandedImageView.getDrawable()).getBitmap();
+
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".png");
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+
+            ContentResolver resolver = imageView.getContext().getContentResolver();
+            Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+            try {
+                OutputStream outputStream = resolver.openOutputStream(imageUri);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+
+                Toast.makeText(imageView.getContext(), "Image downloaded", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        /* shareButton.setOnClickListener(v -> {
+            Bitmap mBitmap = ((BitmapDrawable) expandedImageView.getDrawable()).getBitmap();
+
+            String fileName = name + ".png";
+            Drawable mDrawable = imageView.getDrawable();;
+
+            String path = MediaStore.Images.Media.insertImage(imageView.getContext().getContentResolver(), mBitmap, "Image Description", null);
+            Uri uri = Uri.parse(path);
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/png");
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            imageView.getContext().getApplicationContext().startActivity(Intent.createChooser(intent, "Share Image"));
+        }); */
+
+        dialog.show();
+    }
+
+    /* private static Bitmap createInvisibleLayoutAndDownloadOrShare(ImageView imageView, String headName, String bodyName) {
+        View inflatedLayout = View.inflate(imageView.getContext(), R.layout.other_image_download, null);
+        CardView invisibleLayout = inflatedLayout.findViewById(R.id.invisibleLayout);
+        ImageView spriteView = inflatedLayout.findViewById(R.id.sprite);
+        TextView headNameView = inflatedLayout.findViewById(R.id.headName);
+        TextView bodyNameView = inflatedLayout.findViewById(R.id.bodyName);
+        headNameView.setText(headName);
+        bodyNameView.setText(bodyName);
+        spriteView.setImageDrawable(imageView.getDrawable());
+        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        invisibleLayout.measure(widthMeasureSpec, heightMeasureSpec);
+        invisibleLayout.layout(0, 0, invisibleLayout.getMeasuredWidth(), invisibleLayout.getMeasuredHeight());
+        Bitmap bitmap = Bitmap.createBitmap(invisibleLayout.getWidth(), invisibleLayout.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        invisibleLayout.draw(canvas);
+        return bitmap;
+    } */
 }
