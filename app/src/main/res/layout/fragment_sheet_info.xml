@@ -11,43 +11,64 @@
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/drag_handle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        style="@style/ChipGrup" />
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <androidx.core.widget.NestedScrollView style="@style/ChipGrup">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="36dp"
-            android:paddingBottom="36dp">
+            android:paddingHorizontal="32dp"
+            android:paddingBottom="32dp"
+            style="@style/ChipGrup">
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Material3.CardView.Elevated"
+                android:id="@+id/mainCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/sprite"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="16dp"/>
+                    android:orientation="vertical"
+                    style="@style/ChipGrup"
+                    android:paddingTop="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:visibility="invisible" />
+
+
+                        <ImageView
+                            android:id="@+id/sprite"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_margin="16dp"
+                            android:layout_weight="2"
+                            android:scaleType="fitCenter"
+                            android:adjustViewBounds="true"
+                            android:layout_gravity="center"/>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:visibility="invisible" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="2"
                         android:orientation="vertical"
-                        android:paddingVertical="16dp"
-                        android:paddingEnd="16dp"
-                        android:gravity="center_vertical">
+                        android:paddingHorizontal="32dp"
+                        android:paddingBottom="32dp"
+                        android:gravity="center_vertical"
+                        style="@style/ChipGrup">
 
                         <TextView
                             android:id="@+id/name"
@@ -62,6 +83,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             style="@style/TextAppearance.Material3.BodyMedium"
+                            android:paddingBottom="8dp"
                             android:text="@string/id"/>
 
                         <TextView
@@ -70,6 +92,35 @@
                             android:layout_height="wrap_content"
                             style="@style/TextAppearance.Material3.BodyMedium"
                             android:text="@string/type"/>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/typeChipGroup"
+                            style="@style/ChipGrup" />
+
+                        <TextView
+                            android:id="@+id/abilities"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            style="@style/TextAppearance.Material3.BodyMedium"
+                            android:text="@string/abilities"/>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/abilitiesChipGroup"
+                            style="@style/ChipGrup" />
+
+                        <TextView
+                            android:id="@+id/hiddenAbilities"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            style="@style/TextAppearance.Material3.BodyMedium"
+                            android:text="@string/hidden_abilities"/>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/hiddenAbilitiesChipGroup"
+                            android:layout_marginBottom="-8dp"
+                            style="@style/ChipGrup" />
 
                     </LinearLayout>
 
@@ -85,12 +136,11 @@
 
                 <LinearLayout
                     android:id="@+id/stats_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginTop="11dp"
-                    android:orientation="vertical">
+                    android:paddingTop="24dp"
+                    android:paddingHorizontal="32dp"
+                    android:paddingBottom="32dp"
+                    android:orientation="vertical"
+                    style="@style/ChipGrup">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -100,10 +150,9 @@
                         android:paddingBottom="4dp"/>
 
                     <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:indeterminate="true"/>
+                        android:indeterminate="true"
+                        style="@style/ChipGrup" />
 
                 </LinearLayout>
 
@@ -116,12 +165,11 @@
                 android:layout_marginTop="32dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="11dp"
-                    android:paddingHorizontal="16dp"
-                    android:paddingBottom="16dp"
-                    android:orientation="vertical">
+                    android:paddingTop="24dp"
+                    android:paddingHorizontal="32dp"
+                    android:paddingBottom="32dp"
+                    android:orientation="vertical"
+                    style="@style/ChipGrup">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -131,17 +179,15 @@
                         android:paddingBottom="4dp"/>
 
                     <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:indeterminate="true"/>
+                        android:indeterminate="true"
+                        style="@style/ChipGrup" />
 
                     <GridLayout
                         android:id="@+id/alt_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:columnCount="2"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        style="@style/ChipGrup">
 
                     </GridLayout>
 

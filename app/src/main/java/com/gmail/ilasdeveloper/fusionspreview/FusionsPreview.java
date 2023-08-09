@@ -1,7 +1,6 @@
 package com.gmail.ilasdeveloper.fusionspreview;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.squareup.picasso.Cache;
 import com.squareup.picasso.Picasso;

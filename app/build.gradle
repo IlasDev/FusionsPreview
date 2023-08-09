@@ -12,7 +12,7 @@ android {
         applicationId "com.gmail.ilasdeveloper.fusionspreview"
         minSdk 26
         targetSdk 33
-        versionCode 7
+        versionCode 8
         versionName "1.5.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

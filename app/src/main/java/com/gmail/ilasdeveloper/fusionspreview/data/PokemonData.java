@@ -1,15 +1,20 @@
 package com.gmail.ilasdeveloper.fusionspreview.data;
 
+import com.gmail.ilasdeveloper.fusionspreview.data.models.Ability;
 import com.gmail.ilasdeveloper.fusionspreview.data.models.Pokemon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PokemonData {
     private static PokemonData instance;
     private final ArrayList<Pokemon> customStats;
     private final ArrayList<Pokemon> customTyping;
+    private final ArrayList<Pokemon> customAbilities;
+    private final ArrayList<String> abilitySwap;
 
     private PokemonData() {
+
         customStats = new ArrayList<>();
         customStats.add(new Pokemon("Pidgeot", new int[]{83, 80, 75, 70, 70, 91}));
         customStats.add(new Pokemon("Pikachu", new int[]{35, 55, 30, 50, 40, 90}));
@@ -72,6 +77,180 @@ public class PokemonData {
         customTyping.add(new Pokemon("Geodude", new String[]{"rock"}));
         customTyping.add(new Pokemon("Graveler", new String[]{"rock"}));
         customTyping.add(new Pokemon("Golem", new String[]{"rock"}));
+
+        customAbilities = new ArrayList<>(Arrays.asList(
+                new Pokemon("Chandelure", Arrays.asList(
+                        new Ability("flash-fire", false),
+                        new Ability("flame-body", false),
+                        new Ability("shadow-tag", true)
+                )),
+                new Pokemon("Lampent", Arrays.asList(
+                        new Ability("flash-fire", false),
+                        new Ability("flame-body", false),
+                        new Ability("shadow-tag", true)
+                )),
+                new Pokemon("Litwick", Arrays.asList(
+                        new Ability("flash-fire", false),
+                        new Ability("flame-body", false),
+                        new Ability("shadow-tag", true)
+                )),
+                new Pokemon("Wigglytuff", Arrays.asList(
+                        new Ability("cute-charm", false),
+                        new Ability("frisk", true)
+                )),
+                new Pokemon("Jigglypuff", Arrays.asList(
+                        new Ability("cute-charm", false),
+                        new Ability("friend-guard", true)
+                )),
+                new Pokemon("Igglybuff", Arrays.asList(
+                        new Ability("cute-charm", false),
+                        new Ability("friend-guard", true)
+                )),
+                new Pokemon("Zapdos", Arrays.asList(
+                        new Ability("pressure", false),
+                        new Ability("lightning-rod", true)
+                )),
+                new Pokemon("Raikou", Arrays.asList(
+                        new Ability("pressure", false),
+                        new Ability("volt-absorb", true)
+                )),
+                new Pokemon("Entei", Arrays.asList(
+                        new Ability("pressure", false),
+                        new Ability("flash-fire", true)
+                )),
+                new Pokemon("Suicune", Arrays.asList(
+                        new Ability("pressure", false),
+                        new Ability("water-absorb", true)
+                )),
+                new Pokemon("Milotic", Arrays.asList(
+                        new Ability("marvel-scale", false),
+                        new Ability("cute-charm", true)
+                )),
+                new Pokemon("Feebas", Arrays.asList(
+                        new Ability("swift-swim", false),
+                        new Ability("adaptability", true)
+                )),
+                new Pokemon("Gengar", Arrays.asList(
+                        new Ability("levitate", false)
+                )),
+                new Pokemon("Weezing", Arrays.asList(
+                        new Ability("levitate", false),
+                        new Ability("stench", true)
+                )),
+                new Pokemon("Koffing", Arrays.asList(
+                        new Ability("levitate", false),
+                        new Ability("stench", true)
+                )),
+                new Pokemon("Mewtwo", Arrays.asList(
+                        new Ability("pressure", false),
+                        new Ability("immunity", true)
+                )),
+                new Pokemon("Unown", Arrays.asList(
+                        new Ability("levitate", false),
+                        new Ability("mummy", true)
+                )),
+                new Pokemon("Flygon", Arrays.asList(
+                        new Ability("levitate", false),
+                        new Ability("dry-skin", true)
+                )),
+                new Pokemon("Regigigas", Arrays.asList(
+                        new Ability("slow-start", false),
+                        new Ability("mold-breaker", true)
+                )),
+                new Pokemon("Darkrai", Arrays.asList(
+                        new Ability("bad-dreams", false),
+                        new Ability("white-smoke", true)
+                )),
+                new Pokemon("Genesect", Arrays.asList(
+                        new Ability("download", false),
+                        new Ability("motor-drive", true)
+                )),
+                new Pokemon("Reshiram", Arrays.asList(
+                        new Ability("turboblaze", false),
+                        new Ability("flare-boost", true)
+                )),
+                new Pokemon("Zekrom", Arrays.asList(
+                        new Ability("teravolt", false),
+                        new Ability("volt-absorb", true)
+                )),
+                new Pokemon("Kyurem", Arrays.asList(
+                        new Ability("pressure", false),
+                        new Ability("ice-body", true)
+                )),
+                new Pokemon("Ferrothorn", Arrays.asList(
+                        new Ability("iron-barbs", false)
+                )),
+                new Pokemon("Talonflame", Arrays.asList(
+                        new Ability("big-pecks", false),
+                        new Ability("gale-wings", true)
+                )),
+                new Pokemon("Hydreigon", Arrays.asList(
+                        new Ability("levitate", false),
+                        new Ability("hustle", true)
+                )),
+                new Pokemon("Cleffa", Arrays.asList(
+                        new Ability("magic-guard", false),
+                        new Ability("cute-charm", false),
+                        new Ability("friend-guard", true)
+                )),
+                new Pokemon("Clefairy", Arrays.asList(
+                        new Ability("magic-guard", false),
+                        new Ability("cute-charm", false),
+                        new Ability("friend-guard", true)
+                )),
+                new Pokemon("Clefable", Arrays.asList(
+                        new Ability("magic guard", false),
+                        new Ability("cute charm", false),
+                        new Ability("unaware", true)
+                )),
+                new Pokemon("Gallade", Arrays.asList(
+                        new Ability("steadfast", false),
+                        new Ability("justified", true)
+                ))
+        ));
+
+        abilitySwap = new ArrayList<>(Arrays.asList(
+                "Pidgey",
+                "Pidgeotto",
+                "Pidgeot",
+                "Ekans",
+                "Arbok",
+                "Diglett",
+                "Dugtrio",
+                "Growlithe",
+                "Arcanine",
+                "Machop",
+                "Machoke",
+                "Machamp",
+                "Geodude",
+                "Graveler",
+                "Golem",
+                "Farfetchd",
+                "Onix",
+                "Steelix",
+                "Krabby",
+                "Kingler",
+                "Voltorb",
+                "Electrode",
+                "Cubone",
+                "Marowak",
+                "Hitmonchan",
+                "Lapras",
+                "Snorlax",
+                "Aerodactyl",
+                "Chinchou",
+                "Lanturn",
+                "Marill",
+                "Azumarill",
+                "Dunsparce",
+                "Murkrow",
+                "Honchkrow",
+                "Snubbull",
+                "Granbull",
+                "Teddiursa",
+                "Ursaring",
+                "Absol"
+        ));
     }
 
     public static synchronized PokemonData getInstance() {
@@ -87,5 +266,13 @@ public class PokemonData {
 
     public ArrayList<Pokemon> getCustomTyping() {
         return customTyping;
+    }
+
+    public ArrayList<Pokemon> getCustomAbilities() {
+        return customAbilities;
+    }
+
+    public ArrayList<String> getAbilitySwap() {
+        return abilitySwap;
     }
 }

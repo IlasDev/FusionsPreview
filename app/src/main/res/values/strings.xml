@@ -16,8 +16,13 @@
     <string name="randomize_everything">Randomize everything</string>
     <string name="randomize">Randomize</string>
     <string name="name">Name</string>
-    <string name="id">ID: </string>
-    <string name="type">Type: </string>
+    <string name="id">ID:\ </string>
+    <string name="type">Types:\ </string>
+    <string name="abilities">Abilities:\ </string>
+    <string name="settings">Settings</string>
+    <string name="head_uppercase">Head</string>
+    <string name="non_shiny">Non-shiny</string>
+    <string name="body_uppercase">Body</string>
     <string name="statistics">Statistics</string>
     <string name="variants">Variants</string>
     <string name="make_it_shine">Make it shine</string>
@@ -38,8 +43,5 @@
     <string name="theme_yotsuba">Yotsuba</string>
     <string name="theme_tidalwave">Tidal Wave</string>
     <string name="label_default">Default</string>
-    <string name="settings">Settings</string>
-    <string name="head_uppercase">Head</string>
-    <string name="non_shiny">Non-shiny</string>
-    <string name="body_uppercase">Body</string>
+    <string name="hidden_abilities">"Hidden abilities:\ "</string>
 </resources>

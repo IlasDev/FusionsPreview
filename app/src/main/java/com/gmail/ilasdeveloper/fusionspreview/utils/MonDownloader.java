@@ -1,5 +1,6 @@
 package com.gmail.ilasdeveloper.fusionspreview.utils;
 
+import static com.gmail.ilasdeveloper.fusionspreview.utils.UtilsCollection.capitalizeFirstLetter;
 import static com.gmail.ilasdeveloper.fusionspreview.utils.UtilsCollection.indexOfIgnoreCase;
 
 import android.annotation.SuppressLint;
@@ -9,30 +10,23 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,20 +34,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.ilasdeveloper.fusionspreview.R;
 import com.gmail.ilasdeveloper.fusionspreview.csv.CsvIndexer;
 import com.gmail.ilasdeveloper.fusionspreview.data.PokemonData;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.Ability;
 import com.gmail.ilasdeveloper.fusionspreview.data.models.Pokemon;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 public class MonDownloader {
@@ -151,6 +148,9 @@ public class MonDownloader {
         ImageView sprite = bottomSheetDialog.findViewById(R.id.sprite);
         LinearLayout statsLayout = bottomSheetDialog.findViewById(R.id.stats_layout);
         GridLayout altLayout = bottomSheetDialog.findViewById(R.id.alt_layout);
+        ChipGroup typeChipGroup = bottomSheetDialog.findViewById(R.id.typeChipGroup);
+        ChipGroup abilitiesChipGroup = bottomSheetDialog.findViewById(R.id.abilitiesChipGroup);
+        ChipGroup hiddenAbilitiesChipGroup = bottomSheetDialog.findViewById(R.id.hiddenAbilitiesChipGroup);
         int indexOfHead = UtilsCollection.indexOfIgnoreCase(monsList, head);
         int indexOfBody = UtilsCollection.indexOfIgnoreCase(monsList, body);
 
@@ -163,24 +163,25 @@ public class MonDownloader {
 
         addToGrid(altLayout, monsList, head, body, indexOfHead + 1, indexOfBody + 1, "a", false, new ArrayList<>());
 
-        final int[][] headStats = {new int[7]};
-        final int[][] bodyStats = {new int[7]};
         final int[][] combinedStats = {new int[7]};
-        final String[][] headTypes = new String[1][1];
-        final String[][] bodyTypes = new String[1][1];
         final String[][] combinedTypes = new String[1][1];
+        final ArrayList<Ability>[][] combinedAbilities = new ArrayList[][]{new ArrayList[2]};
 
         new Thread(() -> {
             try {
                 PokeAPI.getPokemonAsync(head).thenAccept(headResponse -> {
-                    headStats[0] = extractStats(headResponse);
-                    headTypes[0] = extractTypes(headResponse);
                     try {
                         PokeAPI.getPokemonAsync(body).thenAccept(bodyResponse -> {
-                            bodyStats[0] = extractStats(bodyResponse);
-                            bodyTypes[0] = extractTypes(bodyResponse);
-                            combinedStats[0] = getCombinedStats(head, body, headStats[0], bodyStats[0]);
-                            combinedTypes[0] = getCombinedTypes(head, body, headTypes[0], bodyTypes[0]);
+                            int[] headStats = extractStats(headResponse);
+                            int[] bodyStats = extractStats(bodyResponse);
+                            String[] headTypes = extractTypes(headResponse);
+                            String[] bodyTypes = extractTypes(bodyResponse);
+                            ArrayList<Ability> headAbilities = extractAbilities(headResponse);
+                            ArrayList<Ability> bodyAbilities = extractAbilities(bodyResponse);
+
+                            combinedStats[0] = getCombinedStats(head, body, headStats, bodyStats);
+                            combinedTypes[0] = getCombinedTypes(head, body, headTypes, bodyTypes);
+                            combinedAbilities[0] = getCombinedAbilities(head, body, headAbilities, bodyAbilities);
                         }).get();
                     } catch (ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
@@ -202,10 +203,23 @@ public class MonDownloader {
                     statProgress.setTrackColor(ContextCompat.getColor(context, com.google.android.material.R.color.material_on_surface_stroke));
                     statsLayout.addView(view);
                 }
-                String typeText = "Types: " + UtilsCollection.capitalizeFirstLetter(combinedTypes[0][0]);
-                if (combinedTypes[0][1] != null)
-                    typeText += "/" + UtilsCollection.capitalizeFirstLetter(combinedTypes[0][1]);
-                type.setText(typeText);
+                for (String currentType : combinedTypes[0]) {
+                    if (currentType == null)
+                        break;
+                    Chip chip = new Chip(context);
+                    chip.setText(capitalizeFirstLetter(currentType));
+                    typeChipGroup.addView(chip);
+                }
+                for (Ability currentAbility : removeDuplicateAbilities(combinedAbilities[0][0])) {
+                    Chip chip = new Chip(context);
+                    chip.setText(capitalizeFirstLetter(normalizeAbilityName(currentAbility.getName())));
+                    abilitiesChipGroup.addView(chip);
+                }
+                for (Ability currentAbility : removeDuplicateAbilities(combinedAbilities[0][1])) {
+                    Chip chip = new Chip(context);
+                    chip.setText(capitalizeFirstLetter(normalizeAbilityName(currentAbility.getName())));
+                    hiddenAbilitiesChipGroup.addView(chip);
+                }
             });
         }).start();
     }
@@ -323,7 +337,6 @@ public class MonDownloader {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode root = objectMapper.readTree(response);
-
             JsonNode statsNode = root.get("stats");
             int[] stats = new int[statsNode.size()];
 
@@ -332,7 +345,6 @@ public class MonDownloader {
                 int statValue = statNode.get("base_stat").asInt();
                 stats[i] = statValue;
             }
-
             return stats;
         } catch (IOException e) {
             throw new RuntimeException("Error extracting stats: " + e.getMessage(), e);
@@ -346,11 +358,30 @@ public class MonDownloader {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode typesArray = rootNode.get("types");
+
             for (JsonNode typeNode : typesArray) {
                 JsonNode typeObject = typeNode.get("type");
                 String typeName = typeObject.get("name").asText();
                 output[index] = typeName;
                 index++;
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+    public static ArrayList<Ability> extractAbilities(String response) {
+        ArrayList<Ability> output = new ArrayList<>();
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response);
+            JsonNode abilitiesNode = rootNode.get("abilities");
+
+            for (JsonNode abilityNode : abilitiesNode) {
+                String abilityName = abilityNode.get("ability").get("name").asText();
+                boolean isHidden = abilityNode.get("is_hidden").asBoolean();
+                output.add(new Ability(abilityName, isHidden));
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -368,6 +399,59 @@ public class MonDownloader {
         if (lastHeadType.equals(lastBodyType)) lastBodyType = bodyTypes[0];
         if (lastHeadType.equals(lastBodyType)) lastBodyType = null;
         return new String[]{lastHeadType, lastBodyType};
+    }
+
+    private static ArrayList<Ability>[] getCombinedAbilities(String head, String body, ArrayList<Ability> headAbilities, ArrayList<Ability> bodyAbilities) {
+
+        for (Pokemon pokemon : PokemonData.getInstance().getCustomAbilities()) {
+            if (pokemon.getName().equals(head)) headAbilities = pokemon.getAbilities();
+            if (pokemon.getName().equals(body)) bodyAbilities = pokemon.getAbilities();
+        }
+        for (String pokemonName : PokemonData.getInstance().getAbilitySwap()) {
+            if (pokemonName.equals(head)) Collections.swap(headAbilities, 0, 1);
+            if (pokemonName.equals(body)) Collections.swap(bodyAbilities, 0, 1);
+        }
+
+        Ability firstAbility = bodyAbilities.get(0);
+        Ability secondAbility = headAbilities.get(0);
+
+        if (headAbilities.size() > 1)
+            if (!headAbilities.get(1).isHidden())
+                secondAbility = headAbilities.get(1);
+
+        ArrayList<Ability> abilities = new ArrayList<>(Arrays.asList(firstAbility, secondAbility));
+        ArrayList<Ability> hiddenAbilities = getHiddenAbilities(headAbilities, bodyAbilities, abilities);
+
+        ArrayList<Ability>[] output = new ArrayList[2];
+        output[0] = abilities;
+        output[1] = hiddenAbilities;
+
+        return output;
+    }
+
+    private static ArrayList<Ability> getHiddenAbilities(ArrayList<Ability> headAbilities, ArrayList<Ability> bodyAbilities, ArrayList<Ability> fusionAbilities) {
+        ArrayList<Ability> allAbilities = new ArrayList<>();
+
+        int maxAbilities = 3;
+        for (int a = 0; a < maxAbilities; a++) {
+            if (a < headAbilities.size()) {
+                Ability headAbility = headAbilities.get(a);
+                allAbilities.add(headAbility);
+            }
+            if (a < bodyAbilities.size()) {
+                Ability bodyAbility = bodyAbilities.get(a);
+                allAbilities.add(bodyAbility);
+            }
+        }
+
+        ArrayList<Ability> hiddenAbilities = new ArrayList<>();
+        for (Ability ability : allAbilities) {
+            if (!fusionAbilities.contains(ability)) {
+                hiddenAbilities.add(ability);
+            }
+        }
+
+        return hiddenAbilities;
     }
 
     public static String generateUrlFromNames(ArrayList<String> monsList, String head, String body) {
@@ -536,4 +620,27 @@ public class MonDownloader {
         invisibleLayout.draw(canvas);
         return bitmap;
     } */
+
+    public static String normalizeAbilityName(String abilityName) {
+        String[] split = abilityName.split("-");
+        int index = 0;
+        for (String word : split) {
+            split[index] = capitalizeFirstLetter(word);
+            index++;
+        }
+        return String.join(" ", split);
+    }
+
+    private static ArrayList<Ability> removeDuplicateAbilities(ArrayList<Ability> list) {
+        ArrayList<Ability> uniqueList = new ArrayList<>();
+        for (Ability item : list) {
+            boolean contains = false;
+            for (Ability itemCheck : uniqueList)
+                if (item.getName().equals(itemCheck.getName()))
+                    contains = true;
+            if (!contains)
+                uniqueList.add(item);
+        }
+        return uniqueList;
+    }
 }
