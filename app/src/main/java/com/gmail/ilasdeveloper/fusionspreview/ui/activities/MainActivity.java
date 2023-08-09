@@ -198,12 +198,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void recreate() {
         finish();
-        startActivity(getIntent());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        finish();
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
