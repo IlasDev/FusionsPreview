@@ -39,7 +39,7 @@ public class CombineFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
-        monsList = args.getStringArrayList("monsList");
+        monsList = args != null ? args.getStringArrayList("monsList") : new ArrayList<>();
     }
 
     @Override

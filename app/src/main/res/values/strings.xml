@@ -44,4 +44,7 @@
     <string name="theme_tidalwave">Tidal Wave</string>
     <string name="label_default">Default</string>
     <string name="hidden_abilities">"Hidden abilities:\ "</string>
+    <string name="retry">Retry</string>
+    <string name="error_1_message">Couldn\'t get the list of the creatures.\nMake sure you have a working internet connection.</string>
+    <string name="face"><![CDATA[(>_<)]]></string>
 </resources>

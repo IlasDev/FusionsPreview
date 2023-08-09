@@ -42,7 +42,7 @@ public class RandomFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        monsList = args.getStringArrayList("monsList");
+        monsList = args != null ? args.getStringArrayList("monsList") : new ArrayList<>();
     }
 
     @Override

@@ -46,7 +46,7 @@ public class GuesserFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        monsList = args.getStringArrayList("monsList");
+        monsList = args != null ? args.getStringArrayList("monsList") : new ArrayList<>();
         busy = false;
     }
 
@@ -61,6 +61,7 @@ public class GuesserFragment extends BaseFragment {
     @Override
     public void init() {
         super.init();
+        if (monsList.size() == 0) return;
         textViewGroups = new TextViewGroup[2];
         textViewGroups[0] = new TextViewGroup(mView.findViewById(R.id.first_option_layout), mView.findViewById(R.id.first_option), getActivity(), monsList);
         textViewGroups[1] = new TextViewGroup(mView.findViewById(R.id.second_option_layout), mView.findViewById(R.id.second_option), getActivity(), monsList);

@@ -1,9 +1,13 @@
 package com.gmail.ilasdeveloper.fusionspreview.ui.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -30,6 +34,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
@@ -60,29 +65,21 @@ public class MainActivity extends AppCompatActivity {
 
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
+        fragmentManager = getSupportFragmentManager();
+        getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
+
         combineFragment = new CombineFragment();
         guesserFragment = new GuesserFragment();
         randomFragment = new RandomFragment();
         shinyFragment = new ShinyFragment();
         settingsFragment = new SettingsFragment();
 
-        fragmentManager = getSupportFragmentManager();
+        init();
+    }
 
+    private void init() {
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
-
-        // Breaks everything
-        /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            View decorView = getWindow().getDecorView();
-            WindowInsetsController windowInsetsController = decorView.getWindowInsetsController();
-            windowInsetsController.addOnControllableInsetsChangedListener((windowInsetsController1, i) -> {
-                if (i == 9)
-                    binding.bottomNavigation.setVisibility(View.GONE);
-                else
-                    binding.bottomNavigation.setVisibility(View.VISIBLE);
-            });
-        } */
 
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
 
@@ -104,30 +101,42 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        fragmentManager.beginTransaction()
-                .add(R.id.frame_layout, combineFragment, combineFragment.getClass().getName()).hide(combineFragment)
-                .add(R.id.frame_layout, guesserFragment, guesserFragment.getClass().getName()).hide(guesserFragment)
-                .add(R.id.frame_layout, randomFragment, randomFragment.getClass().getName()).hide(randomFragment)
-                .add(R.id.frame_layout, shinyFragment, shinyFragment.getClass().getName()).hide(shinyFragment)
-                .add(R.id.frame_layout, settingsFragment, settingsFragment.getClass().getName()).hide(settingsFragment)
-                .commit();
-
         new Thread(() -> csvIndexer = CsvIndexer.createInstance(binding.getRoot().getContext(), "https://raw.githubusercontent.com/infinitefusion/sprites/main/Sprite%20Credits.csv")).start();
 
-        try {
-            CompletableFuture.runAsync(() -> {
-                monsList = retrieveMons();
+        getMons().thenAccept(strings -> {
+            if (strings != null) {
+                monsList = strings;
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("monsList", monsList);
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.frame_layout, combineFragment, combineFragment.getClass().getName()).hide(combineFragment)
+                        .add(R.id.frame_layout, guesserFragment, guesserFragment.getClass().getName()).hide(guesserFragment)
+                        .add(R.id.frame_layout, randomFragment, randomFragment.getClass().getName()).hide(randomFragment)
+                        .add(R.id.frame_layout, shinyFragment, shinyFragment.getClass().getName()).hide(shinyFragment)
+                        .add(R.id.frame_layout, settingsFragment, settingsFragment.getClass().getName()).hide(settingsFragment)
+                        .commit();
+
                 combineFragment.setArguments(bundle);
                 guesserFragment.setArguments(bundle);
                 randomFragment.setArguments(bundle);
                 shinyFragment.setArguments(bundle);
                 updateFragment(combineFragment);
                 lastId = R.id.combine;
-            }).get();
-        } catch (Exception ignored) {
-        }
+            } else {
+                Context context = this;
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setContentView(R.layout.activity_error);
+                        Button button = findViewById(R.id.retryButton);
+                        button.setOnClickListener(view -> {
+                            init();
+                        });
+                    }
+                });
+            }
+        });
     }
 
     private void updateFragment(Fragment fragment) {
@@ -137,27 +146,23 @@ public class MainActivity extends AppCompatActivity {
         this.activeFragment = fragment;
     }
 
-    private ArrayList<String> retrieveMons() {
+    private ArrayList<String> retrieveMons() throws IOException {
         ArrayList<String> output = new ArrayList<>();
 
         String url = "https://raw.githubusercontent.com/IlasDev/InfiniteFusionData/main/mons.csv";
         String lastName = "";
 
-        try {
-            URL rowdata = new URL(url);
-            URLConnection data = rowdata.openConnection();
-            Scanner input = new Scanner(data.getInputStream());
+        URL rowdata = new URL(url);
+        URLConnection data = rowdata.openConnection();
+        Scanner input = new Scanner(data.getInputStream());
 
-            while (input.hasNextLine() && output.size() < 649) {
-                String line = input.nextLine();
-                String name = line.split(",")[0];
-                if (!lastName.equals(name)) {
-                    output.add(name);
-                    lastName = name;
-                }
+        while (input.hasNextLine() && output.size() < 649) {
+            String line = input.nextLine();
+            String name = line.split(",")[0];
+            if (!lastName.equals(name)) {
+                output.add(name);
+                lastName = name;
             }
-
-        } catch (IOException ignored) {
         }
 
         return output;
@@ -214,5 +219,17 @@ public class MainActivity extends AppCompatActivity {
 
     public CsvIndexer getCsvIndexer() {
         return csvIndexer;
+    }
+
+    public CompletableFuture<ArrayList<String>> getMons() {
+        return CompletableFuture.supplyAsync(() -> {
+            ArrayList<String> output;
+            try {
+                output = retrieveMons();
+            } catch (IOException e) {
+                output = null;
+            }
+            return output;
+        });
     }
 }
