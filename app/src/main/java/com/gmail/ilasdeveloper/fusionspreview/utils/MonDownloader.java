@@ -17,6 +17,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -555,7 +556,9 @@ public class MonDownloader {
         TextView fusionNameView = dialog.findViewById(R.id.fusionName);
         TextView fusionIdView = dialog.findViewById(R.id.fusionId);
         TextView authorNameView = dialog.findViewById(R.id.authorName);
-        fusionNameView.setText(monsList.get(Integer.parseInt(name.split("\\.")[0])) + "/" + monsList.get(Integer.parseInt(String.valueOf(name.split("\\.")[1].charAt(0)))));
+        String[] names = name.split("\\.");
+        names[1] = names[1].replaceAll("[^\\d.]", "");
+        fusionNameView.setText(monsList.get(Integer.parseInt(names[0]) - 1) + "/" + monsList.get(Integer.parseInt(names[1]) - 1));
         fusionIdView.setText(name);
         authorNameView.setText(author);
 
