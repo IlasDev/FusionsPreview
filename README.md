@@ -2,9 +2,9 @@
 
 FusionsPreview is a free and open source tool for the game Pokémon Infinite Fusion for Android. **THIS IS NOT THE GAME.**
 
-![](https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android1.svg)
-![](https://ziadoua.github.io/m3-Markdown-Badges/badges/Java/java1.svg)
-![](https://raw.githubusercontent.com/ziadOUA/m3-Markdown-Badges/master/badges/LicenceGPLv3/licencepglv31.svg)
+![](https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg)
+![](https://ziadoua.github.io/m3-Markdown-Badges/badges/Java/java2.svg)
+![](https://raw.githubusercontent.com/ziadOUA/m3-Markdown-Badges/master/badges/LicenceGPLv3/licencepglv32.svg)
 
 ### Screenshots (outdated)
 
