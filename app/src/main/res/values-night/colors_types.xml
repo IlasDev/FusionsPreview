@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Fighting Type Colors (Continued) -->
+    <color name="colorTypeFighting">#ffb1c0</color>
+    <color name="colorOnTypeFighting">#660029</color>
+    <color name="colorTypeFightingContainer">#8f043d</color>
+    <color name="colorOnTypeFightingContainer">#ffd9df</color>
+
+    <!-- Psychic Type Colors (Continued) -->
+    <color name="colorTypePsychic">#ffb3b3</color>
+    <color name="colorOnTypePsychic">#680016</color>
+    <color name="colorTypePsychicContainer">#881c29</color>
+    <color name="colorOnTypePsychicContainer">#ffdad9</color>
+
+    <!-- Poison Type Colors (Continued) -->
+    <color name="colorTypePoison">#eab2ff</color>
+    <color name="colorOnTypePoison">#4f0c6c</color>
+    <color name="colorTypePoisonContainer">#682a85</color>
+    <color name="colorOnTypePoisonContainer">#f7d8ff</color>
+
+    <!-- Dragon Type Colors (Continued) -->
+    <color name="colorTypeDragon">#a4c8ff</color>
+    <color name="colorOnTypeDragon">#00315d</color>
+    <color name="colorTypeDragonContainer">#004784</color>
+    <color name="colorOnTypeDragonContainer">#d4e3ff</color>
+
+    <!-- Ghost Type Colors (Continued) -->
+    <color name="colorTypeGhost">#b4c5ff</color>
+    <color name="colorOnTypeGhost">#002a77</color>
+    <color name="colorTypeGhostContainer">#224290</color>
+    <color name="colorOnTypeGhostContainer">#dbe1ff</color>
+
+    <!-- Dark Type Colors (Continued) -->
+    <color name="colorTypeDark">#d3bbff</color>
+    <color name="colorOnTypeDark">#3b1d70</color>
+    <color name="colorTypeDarkContainer">#533688</color>
+    <color name="colorOnTypeDarkContainer">#ebddff</color>
+
+    <!-- Ground Type Colors (Continued) -->
+    <color name="colorTypeGround">#ffb694</color>
+    <color name="colorOnTypeGround">#571f00</color>
+    <color name="colorTypeGroundContainer">#7a2f01</color>
+    <color name="colorOnTypeGroundContainer">#ffdbcc</color>
+
+    <!-- Fire Type Colors (Continued) -->
+    <color name="colorTypeFire">#ffb785</color>
+    <color name="colorOnTypeFire">#502400</color>
+    <color name="colorTypeFireContainer">#723700</color>
+    <color name="colorOnTypeFireContainer">#ffdcc6</color>
+
+    <!-- Fairy Type Colors (Continued) -->
+    <color name="colorTypeFairy">#ffaaf9</color>
+    <color name="colorOnTypeFairy">#59055c</color>
+    <color name="colorTypeFairyContainer">#732475</color>
+    <color name="colorOnTypeFairyContainer">#ffd6f8</color>
+
+    <!-- Water Type Colors (Continued) -->
+    <color name="colorTypeWater">#9fcaff</color>
+    <color name="colorOnTypeWater">#003259</color>
+    <color name="colorTypeWaterContainer">#00497e</color>
+    <color name="colorOnTypeWaterContainer">#d2e4ff</color>
+
+    <!-- Flying Type Colors (Continued) -->
+    <color name="colorTypeFlying">#adc6ff</color>
+    <color name="colorOnTypeFlying">#002e69</color>
+    <color name="colorTypeFlyingContainer">#0e448e</color>
+    <color name="colorOnTypeFlyingContainer">#d8e2ff</color>
+
+    <!-- Normal Type Colors (Continued) -->
+    <color name="colorTypeNormal">#8bceff</color>
+    <color name="colorOnTypeNormal">#00344e</color>
+    <color name="colorTypeNormalContainer">#004b6f</color>
+    <color name="colorOnTypeNormalContainer">#c9e6ff</color>
+
+    <!-- Rock Type Colors (Continued) -->
+    <color name="colorTypeRock">#e9c348</color>
+    <color name="colorOnTypeRock">#3c2f00</color>
+    <color name="colorTypeRockContainer">#574500</color>
+    <color name="colorOnTypeRockContainer">#ffe087</color>
+
+    <!-- Electric Type Colors (Continued) -->
+    <color name="colorTypeElectric">#e6c52d</color>
+    <color name="colorOnTypeElectric">#3a3000</color>
+    <color name="colorTypeElectricContainer">#544600</color>
+    <color name="colorOnTypeElectricContainer">#ffe16a</color>
+
+    <!-- Bug Type Colors (Continued) -->
+    <color name="colorTypeBug">#a5d642</color>
+    <color name="colorOnTypeBug">#243600</color>
+    <color name="colorTypeBugContainer">#364e00</color>
+    <color name="colorOnTypeBugContainer">#c0f35c</color>
+
+    <!-- Grass Type Colors (Continued) -->
+    <color name="colorTypeGrass">#82db77</color>
+    <color name="colorOnTypeGrass">#003a05</color>
+    <color name="colorTypeGrassContainer">#00530b</color>
+    <color name="colorOnTypeGrassContainer">#9df891</color>
+
+    <!-- Ice Type Colors (Continued) -->
+    <color name="colorTypeIce">#54dbc8</color>
+    <color name="colorOnTypeIce">#003731</color>
+    <color name="colorTypeIceContainer">#005047</color>
+    <color name="colorOnTypeIceContainer">#75f8e4</color>
+
+    <!-- Steel Type Colors (Continued) -->
+    <color name="colorTypeSteel">#58d6f7</color>
+    <color name="colorOnTypeSteel">#003641</color>
+    <color name="colorTypeSteelContainer">#004e5e</color>
+    <color name="colorOnTypeSteelContainer">#b1ecff</color>
+
+    <color name="colorSpriteBackground">#81d997</color>
+    <color name="colorOnSpriteBackground">#003919</color>
+    <color name="colorSpriteBackgroundContainer">#005227</color>
+    <color name="colorOnSpriteBackgroundContainer">#9cf6b1</color>
+
+</resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <PreferenceCategory
+        android:title="Appearance">
+
+        <com.gmail.ilasdeveloper.fusionspreview.ui.widgets.ThemeChooserPreference
+            android:key="theme_scheme"
+            android:title="Color scheme"/>
+
+        <ListPreference
+            android:key="theme_mode"
+            android:title="Theme"
+            android:entries="@array/theme_mode"
+            android:entryValues="@array/theme_mode_values"
+            android:defaultValue="system"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Connection">
+
+        <ListPreference
+            android:icon="@drawable/ic_wifi"
+            android:key="cdn"
+            android:title="Content Delivery Network (CDN)"
+            android:entries="@array/pref_cdn"
+            android:entryValues="@array/pref_cdn_values"
+            android:defaultValue="jsdelivr"
+            android:summary="If sprites take too long to load you should try changing the CDN. Use the GitHub one as a last resort."/>
+
+        <ListPreference
+            android:icon="@drawable/ic_check"
+            android:key="validation"
+            android:title="Sprite validation"
+            android:entries="@array/pref_cdn"
+            android:entryValues="@array/pref_cdn_values"
+            android:defaultValue="github"
+            android:summary="Choose the domain to use to validate sprites (to check if a custom one exists via HEAD request)."/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Other">
+
+        <Preference
+            android:key="about"
+            android:title="About"
+            android:summary="Learn more about the app"
+            android:icon="@drawable/ic_info"/>
+
+        <Preference
+            android:key="github"
+            android:title="Github Repository"
+            android:summary="Check the Github repository out"
+            android:icon="@drawable/ic_source"/>
+
+        <Preference
+            android:key="coffee"
+            android:title="Buy me a coffee"
+            android:summary="I'm broke, I need money"
+            android:icon="@drawable/ic_coffee"/>
+
+        <Preference
+            android:key="licenses"
+            android:title="Open source licenses"
+            android:summary="Check the open source licenses"
+            android:icon="@drawable/ic_motion"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fusionsPreview_primary">#0057CE</color>
+    <color name="fusionsPreview_onPrimary">#FFFFFF</color>
+    <color name="fusionsPreview_primaryContainer">#D8E2FF</color>
+    <color name="fusionsPreview_onPrimaryContainer">#001947</color>
+    <color name="fusionsPreview_secondary">#0057CE</color>
+    <color name="fusionsPreview_onSecondary">#FFFFFF</color>
+    <color name="fusionsPreview_secondaryContainer">#D8E2FF</color>
+    <color name="fusionsPreview_onSecondaryContainer">#001947</color>
+    <color name="fusionsPreview_tertiary">#006E17</color>
+    <color name="fusionsPreview_onTertiary">#FFFFFF</color>
+    <color name="fusionsPreview_tertiaryContainer">#95F990</color>
+    <color name="fusionsPreview_onTertiaryContainer">#002202</color>
+    <color name="fusionsPreview_background">#FDFBFF</color>
+    <color name="fusionsPreview_onBackground">#1B1B1E</color>
+    <color name="fusionsPreview_surface">#FDFBFF</color>
+    <color name="fusionsPreview_onSurface">#1B1B1E</color>
+    <color name="fusionsPreview_surfaceVariant">#E1E2EC</color>
+    <color name="fusionsPreview_onSurfaceVariant">#44464E</color>
+    <color name="fusionsPreview_outline">#757780</color>
+    <color name="fusionsPreview_inverseOnSurface">#F2F0F4</color>
+    <color name="fusionsPreview_inverseSurface">#303033</color>
+    <color name="fusionsPreview_primaryInverse">#AEC6FF</color>
+    <bool name="fusionsPreview_windowLightStatusBar">true</bool>
+    <color name="fusionsPreview_colorError">@color/md_theme_light_error</color>
+    <color name="fusionsPreview_colorOnError">@color/md_theme_light_onError</color>
+    <color name="fusionsPreview_colorErrorContainer">@color/md_theme_light_errorContainer</color>
+    <color name="fusionsPreview_colorOnErrorContainer">@color/md_theme_light_onErrorContainer</color>
+
+    <color name="splash">#54759E</color>
+</resources>

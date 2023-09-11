@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">FusionsPreview</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="first_pokemon">First creature</string>
+    <string name="second_pokemon">Second creature</string>
+    <string name="fuse">Fuse</string>
+    <string name="head_pokemon">Head creature</string>
+    <string name="body_pokemon">Body creature</string>
+    <string name="check">Check</string>
+    <string name="custom_sprites_only">Custom sprites only (takes more time to load the sprite)</string>
+    <string name="surrender">Surrender</string>
+    <string name="current_streak">Current streak:\ </string>
+    <string name="_0">0</string>
+    <string name="attempts_on_this_one">Attempts on this one:\ </string>
+    <string name="choose_a_pokemon">Choose a creature</string>
+    <string name="randomize_everything">Randomize everything</string>
+    <string name="randomize">Randomize</string>
+    <string name="name">Name</string>
+    <string name="id">ID:\ </string>
+    <string name="type">Types:\ </string>
+    <string name="abilities">Abilities:\ </string>
+    <string name="settings">Settings</string>
+    <string name="head_uppercase">Head</string>
+    <string name="non_shiny">Non-shiny</string>
+    <string name="body_uppercase">Body</string>
+    <string name="statistics">Statistics</string>
+    <string name="variants">Variants</string>
+    <string name="make_it_shine">Make it shine</string>
+    <string name="combine">Combine</string>
+    <string name="shiny">Shiny</string>
+    <string name="guesser">Guesser</string>
+    <string name="shiny_preview">Shiny Preview</string>
+    <string name="no_creature_found">No creature found.</string>
+
+    <!-- Themes -->
+    <string name="theme_monet">Dynamic</string>
+    <string name="theme_greenapple">Green Apple</string>
+    <string name="theme_lavender">Lavender</string>
+    <string name="theme_midnightdusk">Midnight Dusk</string>
+    <string name="theme_strawberrydaiquiri">Strawberry Daiquiri</string>
+    <string name="theme_tako">Tako</string>
+    <string name="theme_tealturquoise">Teal &amp; Turquoise</string>
+    <string name="theme_yinyang">Yin &amp; Yang</string>
+    <string name="theme_yotsuba">Yotsuba</string>
+    <string name="theme_tidalwave">Tidal Wave</string>
+    <string name="label_default">Default</string>
+    <string name="hidden_abilities">"Hidden abilities:\ "</string>
+    <string name="retry">Retry</string>
+    <string name="error_1_message">Couldn\'t get the list of the creatures.\nMake sure you have a working internet connection.</string>
+    <string name="face"><![CDATA[(>_<)]]></string>
+    <string name="mon_sub_placeholder">...</string>
+    <string name="pokedex">Dex</string>
+</resources>

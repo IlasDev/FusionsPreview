@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.activities.MainActivity"
+    style="@style/CoordinatorLayout">
+
+    <com.google.android.material.appbar.AppBarLayout
+        app:liftOnScroll="true"
+        style="@style/AppBarLayout">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            app:menu="@menu/menu_main"
+            app:title="@string/randomize"
+            style="@style/MaterialToolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        style="@style/NestedScrollView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/first_option_layout"
+                style="@style/TextInputLayout">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/first_option"
+                    android:hint="@string/choose_a_pokemon"
+                    style="@style/AutoCompleterTextView" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/randomize_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="-8dp"
+                android:text="@string/randomize_everything"/>
+
+            <GridLayout
+                android:id="@+id/mons"
+                style="@style/GridLayoutMons" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/random_extended_fab"
+        android:text="@string/randomize"
+        app:icon="@drawable/ic_auto_fix"
+        style="@style/ExtendedFab" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

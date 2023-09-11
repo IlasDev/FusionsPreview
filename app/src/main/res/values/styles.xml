@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AutoCompleterTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableStart">@drawable/ic_pokeball</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:inputType">text</item>
+        <item name="android:lines">1</item>
+        <item name="android:maxLines">1</item>
+        <!-- <item name="android:dropDownHeight">192dp</item> -->
+    </style>
+
+    <style name="NestedScrollViewMain">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="NestedScrollView" parent="NestedScrollViewMain">
+        <item name="android:paddingBottom">80dp</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
+    <style name="TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ExtendedFab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:layout_margin">16dp</item>
+    </style>
+
+    <style name="GridLayoutMons">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">-8dp</item>
+        <item name="android:layout_marginRight">-8dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="MaterialToolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+    </style>
+
+    <style name="AppBarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="CoordinatorLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="enableEdgeToEdge">true</item>
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
+
+    <style name="TextLinearLayout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="TextDataNormal">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="TextDataBold">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.TitleSmall</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <!-- Fixes -->
+
+    <style name="PreferenceThemeOverlay.FusionsPreview">
+        <item name="android:layout">@layout/fragment_settings</item>
+        <item name="preferenceCategoryTitleTextAppearance">?attr/textAppearanceBodyMedium</item>
+        <item name="singleLineTitle">false</item>
+        <item name="iconSpaceReserved">false</item>
+    </style>
+
+    <style name="Preference.SwitchPreferenceCompat.M3" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="android:widgetLayout">@layout/preference_widget_material_switch</item>
+    </style>
+
+    <style name="Preference.ThemeChooser" parent="Preference.Material">
+        <item name="android:layout">@layout/preference_theme</item>
+        <item name="android:selectable">false</item>
+    </style>
+
+    <style name="ThemeOverlay.FusionsPreview.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:layout">@layout/m3_alert_dialog</item>
+        <item name="android:background">@drawable/m3_popup_background</item>
+        <item name="dialogCornerRadius">@dimen/m3_alert_dialog_corner_size</item>
+    </style>
+
+    <style name="ChipGrup">
+        <item name="chipSpacingVertical">-4dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Widget.App.Chip" parent="Widget.Material3.Chip.Assist">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Chip</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Chip" parent="">
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <style name="TabContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginHorizontal">16dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+</resources>
