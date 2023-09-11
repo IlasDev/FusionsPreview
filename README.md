@@ -8,9 +8,9 @@ FusionsPreview is a free and open source tool for the game Pokémon Infinite Fus
 
 ### Screenshots (outdated)
 
-| ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot1.jpg) | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot2.jpg) |
-|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot3.jpg) | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot4.jpg) |
+| ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot8.jpg) | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot9.jpg) | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot10.jpg) |
+|-|-|-|
+| ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot7.jpg) | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot6.jpg) |
 
 ### Downloads
 
@@ -22,6 +22,7 @@ FusionsPreview is a free and open source tool for the game Pokémon Infinite Fus
 * Randomize fusions
 * Preview shiny fusions
 * Guess the fusions
+* Filter fusions
 
 ### Known bugs
 
