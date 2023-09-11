@@ -6,7 +6,7 @@ FusionsPreview is a free and open source tool for the game Pokémon Infinite Fus
 ![](https://ziadoua.github.io/m3-Markdown-Badges/badges/Java/java2.svg)
 ![](https://raw.githubusercontent.com/ziadOUA/m3-Markdown-Badges/master/badges/LicenceGPLv3/licencepglv32.svg)
 
-### Screenshots (outdated)
+### Screenshots
 
 | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot8.jpg) | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot9.jpg) | ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/Screenshot10.jpg) |
 |-|-|-|
@@ -14,7 +14,11 @@ FusionsPreview is a free and open source tool for the game Pokémon Infinite Fus
 
 ### Downloads
 
+Google Play Store page might not be available. If it happens, it should be temporary.
+
 <a href="https://play.google.com/store/apps/details?id=com.gmail.ilasdeveloper.fusionspreview"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height=60px /></a>
+
+Alternatively you can download the app from the [**releases**](https://github.com/IlasDev/FusionsPreview/releases/latest) page.
 
 ### Features
 
@@ -26,8 +30,7 @@ FusionsPreview is a free and open source tool for the game Pokémon Infinite Fus
 
 ### Known bugs
 
-* In the expanded sprite dialog it's impossible to see the text using light themes (white on white);
-* Types are not correct.
+None. If you encounter an issue let me know by opening an "Issue" on this repository.
 
 ### License
 
