@@ -15,6 +15,8 @@ public class Theming {
         switch (appTheme) {
             // case MONET:
             //     return R.style.Theme_FusionsPreview_Monet;
+            case OCEAN_BLUE:
+                return R.style.Theme_FusionsPreview_Base;
             case GREEN_APPLE:
                 return R.style.Theme_FusionsPreview_GreenApple;
             case LAVENDER:

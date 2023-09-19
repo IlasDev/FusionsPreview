@@ -1,9 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.FusionsPreview" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">@bool/fusionsPreview_windowLightStatusBar</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.FusionsPreview</item>
-        <item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
-        <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
+
         <item name="android:textAppearanceListItem">?attr/textAppearanceBodyLarge</item>
         <item name="android:textAppearanceListItemSecondary">@style/TextAppearance.Material3.BodySmall</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.FusionsPreview.MaterialAlertDialog</item>
@@ -102,10 +106,6 @@
     </style>
 
     <style name="Theme.FusionsPreview.Base" parent="Theme.FusionsPreview">
-
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">@bool/fusionsPreview_windowLightStatusBar</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
 
         <!-- Theme Colors -->
         <item name="colorPrimary">@color/fusionsPreview_primary</item>

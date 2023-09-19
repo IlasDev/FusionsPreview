@@ -18,10 +18,19 @@
             android:defaultValue="system"
             app:useSimpleSummaryProvider="true"/>
 
+        <!--
+        <SwitchPreferenceCompat
+            app:title="Colored types"
+            android:defaultValue="true"
+            android:key="typecolors"
+            android:summary="Show colored background behind the types when inspecting a creature"/>
+            -->
+
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Connection">
+        android:enabled="false"
+        android:title="Connection (currently disabled)">
 
         <ListPreference
             android:icon="@drawable/ic_wifi"
@@ -30,7 +39,7 @@
             android:entries="@array/pref_cdn"
             android:entryValues="@array/pref_cdn_values"
             android:defaultValue="jsdelivr"
-            android:summary="If sprites take too long to load you should try changing the CDN. Use the GitHub one as a last resort."/>
+            android:summary="If sprites take too long to load you should try changing the CDN. Use the GitHub one as a last resort"/>
 
         <ListPreference
             android:icon="@drawable/ic_check"
@@ -39,7 +48,19 @@
             android:entries="@array/pref_cdn"
             android:entryValues="@array/pref_cdn_values"
             android:defaultValue="github"
-            android:summary="Choose the domain to use to validate sprites (to check if a custom one exists via HEAD request)."/>
+            android:summary="Choose the domain to use to validate sprites (to check if a custom one exists via HEAD request)"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="Analytics">
+
+        <SwitchPreferenceCompat
+            app:title="Analytics collection"
+            android:defaultValue="true"
+            android:key="crash"
+            app:icon="@drawable/ic_bug"
+            android:summary="This includes crash reports. Consider leaving this option enabled to help the developer out. The data is anonymous"/>
 
     </PreferenceCategory>
 
@@ -69,6 +90,24 @@
             android:title="Open source licenses"
             android:summary="Check the open source licenses"
             android:icon="@drawable/ic_motion"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="Updates">
+
+        <Preference
+            android:key="update"
+            android:title="Check for updates"
+            android:summary="Check if a new update is available"
+            android:icon="@drawable/ic_update_alt"/>
+
+        <Preference
+            android:enabled="false"
+            android:key="changelogs"
+            android:title="Changelogs"
+            android:summary="Check changelogs (currently unavailable)"
+            android:icon="@drawable/ic_update"/>
 
     </PreferenceCategory>
 

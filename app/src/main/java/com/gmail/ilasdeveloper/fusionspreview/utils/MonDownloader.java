@@ -35,6 +35,8 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.gmail.ilasdeveloper.fusionspreview.R;
 import com.gmail.ilasdeveloper.fusionspreview.csv.CsvIndexer;
 import com.gmail.ilasdeveloper.fusionspreview.data.PreferencesOptions;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.ObservableArrayList;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.ObservableBoolean;
 import com.gmail.ilasdeveloper.fusionspreview.ui.activities.InfoActivity;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -61,7 +63,18 @@ public class MonDownloader {
             String mon2,
             int index1,
             int index2) {
-        return addToGrid(monsLayout, monsList, mon1, mon2, index1, index2, "", false, null, null);
+        return addToGrid(monsLayout, monsList, mon1, mon2, index1, index2, "", false, null, null, false);
+    }
+
+    public static View addToGrid(
+            GridLayout monsLayout,
+            ArrayList<String> monsList,
+            String mon1,
+            String mon2,
+            int index1,
+            int index2,
+            boolean customSprites) {
+        return addToGrid(monsLayout, monsList, mon1, mon2, index1, index2, "", false, null, null, customSprites);
     }
 
     @SuppressLint("SetTextI18n")
@@ -75,7 +88,8 @@ public class MonDownloader {
             String letter,
             boolean stop,
             ArrayList<String> urls,
-            CircularProgressIndicator progressIndicator) {
+            CircularProgressIndicator progressIndicator,
+            boolean customSprites) {
         LayoutInflater inflater = LayoutInflater.from(monsLayout.getContext());
         String imageUrl;
         if (mon2.equals(""))
@@ -86,12 +100,7 @@ public class MonDownloader {
                             .replaceAll("@param1", String.valueOf(index1))
                             .replaceAll("@param2", String.valueOf(index2))
                             .replaceAll("@param3", letter);
-        int gridCount =
-                (Resources.getSystem().getDisplayMetrics().widthPixels
-                                - (int)
-                                        UtilsCollection.convertDpToPixel(
-                                                64, monsLayout.getContext()))
-                        / 420;
+        int gridCount = (Resources.getSystem().getDisplayMetrics().widthPixels - (int) UtilsCollection.convertDpToPixel(64, monsLayout.getContext())) / 420;
 
         if (!letter.equals("")) {
             if (!stop) {
@@ -110,7 +119,8 @@ public class MonDownloader {
                                         String.valueOf((char) (letter.charAt(0) + 1)),
                                         false,
                                         urls,
-                                        progressIndicator);
+                                        progressIndicator,
+                                        false);
                             } else {
                                 addToGrid(
                                         monsLayout,
@@ -122,7 +132,8 @@ public class MonDownloader {
                                         String.valueOf((char) (letter.charAt(0) + 1)),
                                         true,
                                         urls,
-                                        progressIndicator);
+                                        progressIndicator,
+                                        false);
                             }
                         });
             } else {
@@ -132,7 +143,7 @@ public class MonDownloader {
                     monsLayout.setVisibility(View.GONE);
                     monsLayout.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
                     TextView textView = new TextView(parent.getContext());
-                    textView.setText("No sprite available");
+                    textView.setText(monsLayout.getContext().getString(R.string.no_sprite_available));
                     int eight = UtilsCollection.intToPixel(8, parent.getContext());
                     parent.addView(textView);
                     textView.post(
@@ -235,6 +246,8 @@ public class MonDownloader {
                         imageUrl,
                         isValid -> {
                             if (isValid) {
+                                if (customSprites)
+                                    getActivity(monsLayout.getContext()).runOnUiThread(() -> monsLayout.addView(view));
                                 Picasso.get()
                                         .load(imageUrl)
                                         .networkPolicy(
@@ -243,6 +256,8 @@ public class MonDownloader {
                                         .into(sprite, callback);
                                 // subtitle.setText("Custom sprite");
                             } else {
+                                if (customSprites)
+                                    return;
                                 String backupImageUrl =
                                         PreferencesOptions.getCDNUrl(3, false)
                                                 .replaceAll("@param1", String.valueOf(index1))
@@ -269,11 +284,8 @@ public class MonDownloader {
                                     isImageLoaded[0]));
             view.setVisibility(View.VISIBLE);
             if (mon2.equals("")) return view;
-            getActivity(monsLayout.getContext())
-                    .runOnUiThread(
-                            () -> {
-                                monsLayout.addView(view);
-                            });
+            if (!customSprites)
+                getActivity(monsLayout.getContext()).runOnUiThread(() -> monsLayout.addView(view));
             return view;
         }
         return null;

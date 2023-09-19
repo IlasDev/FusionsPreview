@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -15,6 +16,8 @@ import com.gmail.ilasdeveloper.fusionspreview.R;
 import com.gmail.ilasdeveloper.fusionspreview.ui.activities.MainActivity;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.BuildConfig;
 
 public class SettingsFragment extends PreferenceFragmentCompat   {
@@ -29,6 +32,8 @@ public class SettingsFragment extends PreferenceFragmentCompat   {
         Preference github = findPreference("github");
         Preference coffee = findPreference("coffee");
         Preference licenses = findPreference("licenses");
+        Preference update = findPreference("update");
+        Preference crash = findPreference("crash");
 
         themeMode.setOnPreferenceChangeListener((preference, newValue) -> {
             ((MainActivity) getContext()).updateMode((String) newValue);
@@ -49,11 +54,9 @@ public class SettingsFragment extends PreferenceFragmentCompat   {
                             "FusionsPreview " + version  + "\n" +
                             "Build type: " + BuildConfig.BUILD_TYPE + "\n\n" +
                             "Source code: https://github.com/IlasDev/FusionsPreview" + "\n\n" +
-                            "Custom sprites: https://github.com/infinitefusion/sprites" + "\n" +
-                            "Generated sprites: https://github.com/Aegide/autogen-fusion-sprites" + "\n\n" +
-                            "Developer's note: Please donate. I'm starving. Also this is a early" +
-                                    " preview of the application. Much has to be improved, but" +
-                                    " I'm lazy, so I'll take my time."
+                            "Sprites: https://gitlab.com/infinitefusion/sprites" + "\n\n" +
+                            "Developer's note: Please donate. I'm starving. Also this is a early preview of the application. Much has to be improved, but I'm lazy, so I'll take my time." + "\n\n" +
+                            "This application is not affiliated, associated, endorsed, sponsored or approved by ©Niantic or ©Pokémon Company."
                     )
                     .setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
             dialogBuilder.show();
@@ -79,5 +82,20 @@ public class SettingsFragment extends PreferenceFragmentCompat   {
             return true;
         });
 
+        update.setOnPreferenceClickListener(preference -> {
+            ((MainActivity) getActivity()).checkUpdates(false);
+            return true;
+        });
+
+        crash.setOnPreferenceChangeListener((Preference.OnPreferenceChangeListener) (preference, newValue) -> {
+            if ((boolean) newValue) {
+                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+                FirebaseAnalytics.getInstance(getContext()).setAnalyticsCollectionEnabled(true);
+            } else {
+                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+                FirebaseAnalytics.getInstance(getContext()).setAnalyticsCollectionEnabled(false);
+            }
+            return true;
+        });
     }
 }

@@ -16,12 +16,10 @@
 
         <com.google.android.material.search.SearchBar
             android:id="@+id/searchBar"
-            
+            app:menu="@menu/menu_dex"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search creature"/>
-
-
+            android:hint="@string/search_creature"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

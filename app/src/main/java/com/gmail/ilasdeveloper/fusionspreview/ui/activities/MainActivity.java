@@ -1,15 +1,21 @@
 package com.gmail.ilasdeveloper.fusionspreview.ui.activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.splashscreen.SplashScreen;
@@ -30,18 +36,29 @@ import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.SettingsFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.fragments.ShinyFragment;
 import com.gmail.ilasdeveloper.fusionspreview.ui.themes.Theming;
 import com.gmail.ilasdeveloper.fusionspreview.ui.themes.enums.AppTheme;
+import com.gmail.ilasdeveloper.fusionspreview.utils.updater.AppUpdater;
+import com.gmail.ilasdeveloper.fusionspreview.utils.updater.UpdateListener;
+import com.gmail.ilasdeveloper.fusionspreview.utils.updater.UpdateModel;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.elevation.SurfaceColors;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     private CombineFragment combineFragment;
     private GuesserFragment guesserFragment;
     private RandomFragment randomFragment;
@@ -58,6 +75,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean analytics = prefs.getBoolean("crash", true);
+        if (analytics) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+            FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true);
+        } else {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+            FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
+        }
+
         updateTheme();
 
         super.onCreate(savedInstanceState);
@@ -65,6 +94,14 @@ public class MainActivity extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         SplashScreen.installSplashScreen(this);
+
+        List<String> validInstallers = Arrays.asList("com.android.vending", "com.google.android.feedback");
+        final String installer = getPackageManager().getInstallerPackageName(getPackageName());
+        boolean isFromPlayStore = installer != null && validInstallers.contains(installer);
+        if (isFromPlayStore)
+            showPlayStoreDialog();
+        else
+            checkUpdates(true);
 
         fragmentManager = getSupportFragmentManager();
         getWindow().setNavigationBarColor(SurfaceColors.SURFACE_2.getColor(this));
@@ -124,12 +161,12 @@ public class MainActivity extends AppCompatActivity {
         if (fragmentManager.getFragments().size() > 0) {
             isLoaded = true;
             updateFragment(getFragmentById(lastId));
+            new Thread(CsvIndexer::getInstance).start();
         } else {
             new Thread(
                     () ->
                             csvIndexer =
-                                    CsvIndexer.createInstance(
-                                            "https://cdn.jsdelivr.net/gh/infinitefusion/sprites@main/Sprite%20Credits.csv"))
+                                    CsvIndexer.getInstance())
                     .start();
 
             getMons()
@@ -181,9 +218,11 @@ public class MainActivity extends AppCompatActivity {
                                     dexFragment.setArguments(bundle);
 
                                     isLoaded = true;
-                                    updateFragment(dexFragment);
                                     lastId = R.id.combine;
-                                    changeStatusBarColor(false);
+                                    runOnUiThread(() -> {
+                                        updateFragment(dexFragment);
+                                        changeStatusBarColor(false);
+                                    });
                                 } else {
                                     this.runOnUiThread(
                                             () -> {
@@ -313,4 +352,81 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
+
+    private void showPlayStoreDialog() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean showDialog = preferences.getBoolean("showPlayStoreDialog", true);
+
+        if (showDialog) {
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_moved, null);
+            CheckBox checkBox = dialogView.findViewById(R.id.checkBox);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            builder.setView(dialogView);
+            builder.setTitle(R.string.important_update);
+            builder.setMessage(R.string.we_have_moved_our_app_to_github_releases_would_you_like_to_update_from_there_the_google_play_store_version_of_the_application_will_not_receive_updates);
+            builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/IlasDev/FusionsPreview"));
+                startActivity(browserIntent);
+            });
+            builder.setNegativeButton(R.string.no, (dialog, which) -> {
+                boolean doNotShowAgain = checkBox.isChecked();
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("showPlayStoreDialog", !doNotShowAgain);
+                editor.apply();
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
+
+    public void checkUpdates(boolean usePrefs) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int showDialog = preferences.getInt("showUpdateDialog", -1);
+
+        new AppUpdater(this, "https://cdn.jsdelivr.net/gh/IlasDev/InfiniteFusionData@main/updateInfo.json")
+                .fetchUpdateModel()
+                .thenAccept(updateModel -> {
+                    if (usePrefs && showDialog == updateModel.getVersionCode())
+                        return;
+                    if (AppUpdater.getCurrentVersionCode(this) < updateModel.getVersionCode()) {
+                        runOnUiThread(() -> {
+                            View dialogView = getLayoutInflater().inflate(R.layout.dialog_moved, null);
+                            CheckBox checkBox = dialogView.findViewById(R.id.checkBox);
+                            checkBox.setText(getString(R.string.skip_this_version));
+                            MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this);
+                            if (usePrefs)
+                                dialogBuilder.setView(dialogView);
+                            dialogBuilder
+                                    .setTitle(getString(R.string.update_available))
+                                    .setMessage(getString(R.string.an_update_is_available_please_consider_updating_the_application_to_access_the_latest_features_and_bug_fixes))
+                                    .setCancelable(updateModel.isCancellable())
+                                    .setPositiveButton(getString(R.string.update), (dialog, which) -> {
+                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(updateModel.getUrl()));
+                                        startActivity(browserIntent);
+                                    })
+                                    .setNegativeButton(getString(R.string.close), (dialog, which) -> {
+                                        if (usePrefs) {
+                                            boolean doNotShowAgain = checkBox.isChecked();
+                                            SharedPreferences.Editor editor = preferences.edit();
+                                            if (doNotShowAgain)
+                                                editor.putInt("showUpdateDialog", updateModel.getVersionCode());
+                                            editor.apply();
+                                        }
+                                    }).show();
+                        });
+                    } else if (!usePrefs) {
+                        AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
+                                .setTitle(getString(R.string.no_update_available))
+                                .setMessage(getString(R.string.great_news_you_re_using_the_latest_version))
+                                .setNegativeButton(getString(R.string.close), (dialog, which) -> {})
+                                .show();
+                    }
+                })
+                .exceptionally(throwable -> {
+                    // Handle exceptions here
+                    return null;
+                });
+    }
+
 }

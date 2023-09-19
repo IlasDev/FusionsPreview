@@ -56,7 +56,7 @@ public class InfoSpritesFragment extends Fragment {
         LinearLayout layout = view.findViewById(R.id.main_layout);
 
         CategoryComponent spritesCategory =
-                new CategoryComponent("Sprites", R.drawable.ic_sprites, layout);
+                new CategoryComponent(getString(R.string.sprites), R.drawable.ic_sprites, layout);
         spritesCategory.addToView(inflater).disablePadding().finish();
         LinearLayout spritesCategoryView = spritesCategory.getContentView();
 
@@ -93,7 +93,8 @@ public class InfoSpritesFragment extends Fragment {
                 "a",
                 false,
                 new ArrayList<>(),
-                circularProgressIndicator);
+                circularProgressIndicator,
+                false);
 
         return view;
     }

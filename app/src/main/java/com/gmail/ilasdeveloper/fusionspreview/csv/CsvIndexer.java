@@ -25,12 +25,9 @@ public class CsvIndexer {
         buildIndex(csvUrl);
     }
 
-    public static CsvIndexer createInstance(String csvUrl) {
-        instance = new CsvIndexer(csvUrl);
-        return instance;
-    }
-
     public static CsvIndexer getInstance() {
+        if (instance == null)
+            instance = new CsvIndexer("https://cdn.jsdelivr.net/gh/infinitefusion/sprites@main/Sprite%20Credits.csv");
         return instance;
     }
 

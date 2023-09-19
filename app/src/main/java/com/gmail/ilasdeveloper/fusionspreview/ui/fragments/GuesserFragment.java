@@ -82,9 +82,11 @@ public class GuesserFragment extends BaseFragment {
         attemptsTextView = mView.findViewById(R.id.text_attempts);
         streakTextView = mView.findViewById(R.id.text_streak);
 
-        sprite.getLayoutParams().width = Resources.getSystem().getDisplayMetrics().widthPixels / 2;
-        sprite.getLayoutParams().height = Resources.getSystem().getDisplayMetrics().widthPixels / 2;
-        sprite.requestLayout();
+        sprite.post(() -> {
+            sprite.getLayoutParams().width = Resources.getSystem().getDisplayMetrics().widthPixels / 2;
+            sprite.getLayoutParams().height = Resources.getSystem().getDisplayMetrics().widthPixels / 2;
+            sprite.requestLayout();
+        });
 
         combined = new String[2];
         refreshMons();
@@ -95,7 +97,10 @@ public class GuesserFragment extends BaseFragment {
                     int correct = 0;
                     for (int i = 0; i < 2; i++) {
                         if (textViewGroups[i].getText().equalsIgnoreCase(combined[i])) correct++;
-                        else textViewGroups[i].getTextInputLayout().setError("Incorrect guess");
+                        else
+                            textViewGroups[i]
+                                    .getTextInputLayout()
+                                    .setError(getString(R.string.incorrect_guess));
                     }
                     if (correct == 2) {
                         attemptsTextView.setText("0");
@@ -104,14 +109,17 @@ public class GuesserFragment extends BaseFragment {
                                         Integer.parseInt(streakTextView.getText().toString()) + 1));
                         MaterialAlertDialogBuilder dialogBuilder =
                                 new MaterialAlertDialogBuilder(getContext())
-                                        .setTitle("Correct")
+                                        .setTitle(R.string.correct)
                                         .setMessage(
-                                                "You guessed correctly. The creatures were:\n- Head: "
+                                                getString(
+                                                                R.string
+                                                                        .you_guessed_correctly_the_creatures_were)
+                                                        + "\n- Head: "
                                                         + combined[0]
                                                         + "\n- Body: "
                                                         + combined[1])
                                         .setPositiveButton(
-                                                "Continue",
+                                                getString(R.string.correct),
                                                 (dialogInterface, i) -> dialogInterface.dismiss());
                         // dialogBuilder.setOnDismissListener(dialogInterface -> refreshMons());
                         dialogBuilder.show();
@@ -132,7 +140,7 @@ public class GuesserFragment extends BaseFragment {
                     streakTextView.setText("0");
                     MaterialAlertDialogBuilder dialogBuilder =
                             new MaterialAlertDialogBuilder(getContext())
-                                    .setTitle("You lost")
+                                    .setTitle(R.string.you_lost)
                                     .setMessage(
                                             "You gave up. The creatures were:\n- Head: "
                                                     + combined[0]

@@ -88,10 +88,12 @@
     <!-- Fixes -->
 
     <style name="PreferenceThemeOverlay.FusionsPreview">
+        <item name="android:scrollbars">none</item>
         <item name="android:layout">@layout/fragment_settings</item>
         <item name="preferenceCategoryTitleTextAppearance">?attr/textAppearanceBodyMedium</item>
         <item name="singleLineTitle">false</item>
         <item name="iconSpaceReserved">false</item>
+        <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat.M3</item>
     </style>
 
     <style name="Preference.SwitchPreferenceCompat.M3" parent="Preference.SwitchPreferenceCompat.Material">
@@ -128,6 +130,19 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginHorizontal">16dp</item>
         <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="MaterialButtonToggleGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="singleSelection">true</item>
+        <item name="android:layout_marginTop">8dp</item>
     </style>
 
 </resources>

@@ -4,7 +4,8 @@ import com.gmail.ilasdeveloper.fusionspreview.R;
 
 public enum AppTheme {
 
-    DEFAULT(R.string.label_default, R.style.Theme_FusionsPreview_Base),
+    DEFAULT(R.string.label_default, R.style.Theme_FusionsPreview),
+    OCEAN_BLUE(R.string.theme_oceanblue, R.style.Theme_FusionsPreview_Base),
     // MONET(R.string.theme_monet, R.style.Theme_FusionsPreview_Monet),
     GREEN_APPLE(R.string.theme_greenapple, R.style.Theme_FusionsPreview_GreenApple),
     LAVENDER(R.string.theme_lavender, R.style.Theme_FusionsPreview_Lavender),

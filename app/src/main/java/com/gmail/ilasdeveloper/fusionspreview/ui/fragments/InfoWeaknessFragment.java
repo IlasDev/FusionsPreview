@@ -46,7 +46,7 @@ public class InfoWeaknessFragment extends Fragment {
         LinearLayout layout = view.findViewById(R.id.main_layout);
 
         CategoryComponent weaknessCategoryComponent =
-                new CategoryComponent("Weakness", R.drawable.ic_weakness, layout)
+                new CategoryComponent(getString(R.string.weakness), R.drawable.ic_weakness, layout)
                         .addToView(inflater)
                         .hideDivider()
                         .finish();

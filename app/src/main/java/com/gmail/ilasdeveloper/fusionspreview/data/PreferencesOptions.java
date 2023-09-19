@@ -46,12 +46,15 @@ public class PreferencesOptions {
         switch (typeOfUrl) {
             case 1:
                 url += "sprites" + separator + "main/Other/Base%20Sprites/@param.png";
+                url = "https://gitlab.com/infinitefusion/sprites/-/raw/master/Battlers/@param/@param.@param.png";
                 break;
             case 2:
                 url += "sprites" + separator + "main/CustomBattlers/@param1.@param2@param3.png";
+                url = "https://gitlab.com/infinitefusion/sprites/-/raw/master/CustomBattlers/@param1/@param1.@param2@param3.png";
                 break;
             default:
                 url += "autogen-fusion-sprites" + separator + "master/Battlers/@param1/@param1.@param2.png";
+                url = "https://gitlab.com/infinitefusion/sprites/-/raw/master/Battlers/@param1/@param1.@param2.png";
                 break;
         }
 

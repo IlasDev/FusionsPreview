@@ -1,11 +1,13 @@
 package com.gmail.ilasdeveloper.fusionspreview.ui.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +22,12 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.widget.NestedScrollView;
+import androidx.preference.PreferenceManager;
 
 import com.gmail.ilasdeveloper.fusionspreview.R;
 import com.gmail.ilasdeveloper.fusionspreview.data.PokemonData;
 import com.gmail.ilasdeveloper.fusionspreview.data.models.BaseFragment;
+import com.gmail.ilasdeveloper.fusionspreview.data.models.ObservableArrayList;
 import com.gmail.ilasdeveloper.fusionspreview.data.models.PokemonCollection;
 import com.gmail.ilasdeveloper.fusionspreview.ui.activities.InfoActivity;
 import com.gmail.ilasdeveloper.fusionspreview.ui.widgets.TextViewGroup;
@@ -32,39 +36,56 @@ import com.gmail.ilasdeveloper.fusionspreview.utils.PokeAPI;
 import com.gmail.ilasdeveloper.fusionspreview.utils.UtilsCollection;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.slider.RangeSlider;
-import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.PriorityQueue;
 import java.util.concurrent.CompletableFuture;
 
 public class DexFragment extends BaseFragment {
 
-    private static final int MAX_AMOUNT = 24;
+    private static final int MAX_AMOUNT = 48;
+
+    private static final String PREFERENCES_KEY_SORT_BY = "sortBy";
 
     private boolean isLoading;
     private boolean isCalculating;
     private boolean isSheetOpen;
+    private boolean pauseLoading;
     private ArrayList<String> monsList = null;
     private GridLayout monsLayout;
     private CircularProgressIndicator progressIndicator;
     private LoopState savedState;
     private int gridCount;
+    private ArrayList<CreaturePair> creaturePairs;
     private ArrayList<PokemonCollection> skipHeadList;
     private ArrayList<PokemonCollection> skipBodyList;
     private ArrayList<RangeSlider> selectedRanges;
     private ArrayList<String> selectedTypes;
+    private boolean selectedSpritesType;
+    private boolean selectedTypesType;
     private int amount;
     private TextViewGroup[] textViewGroups;
     private boolean fresh;
     private Context mContext;
+    private ObservableArrayList<View> views;
+    private ArrayList<PokemonCollection> headList;
+    private ArrayList<PokemonCollection> bodyList;
+    private Iterator<CreaturePair> combinationIterator;
+    private PriorityQueue<CreaturePair> sortedCreaturePairs;
+    private int singleSelected;
+    private SharedPreferences sharedPreferences;
+    private String[] firstText;
+    private String[] secondText;
+    private int selectedSortOption;
 
     public DexFragment() {}
 
@@ -101,6 +122,8 @@ public class DexFragment extends BaseFragment {
         fresh = true;
 
         mContext = getContext();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        selectedSortOption = R.id.sort_dex;
 
         monsLayout = mView.findViewById(R.id.mons);
         gridCount = Resources.getSystem().getDisplayMetrics().widthPixels / 420;
@@ -116,8 +139,11 @@ public class DexFragment extends BaseFragment {
                 (NestedScrollView.OnScrollChangeListener)
                         (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                             if (scrollY
-                                    >= (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())
-                                    - 100 && !isCalculating && lastChildCount[0] != monsLayout.getChildCount()) {
+                                            >= (v.getChildAt(0).getMeasuredHeight()
+                                                            - v.getMeasuredHeight())
+                                                    - 100
+                                    && !isCalculating
+                                    && lastChildCount[0] != monsLayout.getChildCount()) {
                                 if (fresh) {
                                     if (!(monsLayout.getChildCount() >= 420)) {
                                         loadNewMons(monsLayout);
@@ -125,8 +151,8 @@ public class DexFragment extends BaseFragment {
                                         progressIndicator.setVisibility(View.GONE);
                                     }
                                 } else {
-                                    startCalculations();
-                                    lastChildCount[0] = monsLayout.getChildCount();
+                                    if (isCalculating || pauseLoading) return;
+                                    populate(true);
                                 }
                             }
                         });
@@ -141,11 +167,68 @@ public class DexFragment extends BaseFragment {
         selectedTypes = new ArrayList<>();
         selectedRanges = new ArrayList<>();
 
+        selectedSpritesType = false;
+        selectedTypesType = false;
+
+        pauseLoading = false;
+
+        creaturePairs = new ArrayList<>();
+
+        firstText = new String[]{""};
+        secondText = new String[]{""};
+
+        amount = 0;
+        views = new ObservableArrayList<>();
+        views.addOnListChangeListener(
+                list -> {
+                    if (list.size() - 1 < amount || pauseLoading) return;
+                    monsLayout.addView(list.get(amount));
+                    amount++;
+                    if (amount % MAX_AMOUNT == 0) {
+                        pauseLoading = true;
+                        progressIndicator.setVisibility(View.VISIBLE);
+                    }
+                });
+
         SearchBar searchBar = mView.findViewById(R.id.searchBar);
+
+        searchBar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.sort) {
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+                View view = getLayoutInflater().inflate(R.layout.dialog_sort, null);
+                bottomSheetDialog.setContentView(view);
+
+                view.findViewById(R.id.hide).setOnClickListener(view13 -> bottomSheetDialog.cancel());
+
+                MaterialButtonToggleGroup toggleGroup = view.findViewById(R.id.sort_group);
+
+                toggleGroup.check(selectedSortOption);
+
+                if (fresh) {
+                    view.findViewById(R.id.errorMessage).setVisibility(View.VISIBLE);
+                    toggleGroup.setEnabled(false);
+                    bottomSheetDialog.show();
+                    return false;
+                }
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+                    if (!isChecked)
+                        return;
+                    selectedSortOption = checkedId;
+                    getActivity().runOnUiThread(() -> monsLayout.removeAllViews());
+                    startCalculations();
+                });
+
+                bottomSheetDialog.show();
+            }
+            return false;
+        });
+
         searchBar.setOnClickListener(
                 view -> {
                     if (isCalculating || isSheetOpen) return;
-
 
                     isSheetOpen = true;
 
@@ -166,6 +249,37 @@ public class DexFragment extends BaseFragment {
                                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                             });
 
+                    MaterialButtonToggleGroup spritesGroup = bottomSheetDialog.findViewById(R.id.spritesGroup);
+                    MaterialButtonToggleGroup typesGroup = bottomSheetDialog.findViewById(R.id.typesGroup);
+
+                    if (!selectedSpritesType)
+                        spritesGroup.check(R.id.toggle_any);
+                    else
+                        spritesGroup.check(R.id.toggle_custom);
+
+                    if (!selectedTypesType)
+                        typesGroup.check(R.id.toggle_contains);
+                    else
+                        typesGroup.check(R.id.toggle_matches);
+
+                    spritesGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+                        if (isChecked) {
+                            if (checkedId == R.id.toggle_any)
+                                selectedSpritesType = false;
+                            else
+                                selectedSpritesType = true;
+                        }
+                    });
+
+                    typesGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+                        if (isChecked) {
+                            if (checkedId == R.id.toggle_contains)
+                                selectedTypesType = false;
+                            else
+                                selectedTypesType = true;
+                        }
+                    });
+
                     Button applyFiltersButton = bottomSheetDialog.findViewById(R.id.applyFilters);
                     ImageView typesSelectAll = bottomSheetDialog.findViewById(R.id.typesSelectAll);
                     GridLayout statsGridLayout =
@@ -173,11 +287,10 @@ public class DexFragment extends BaseFragment {
                     LinearLayout mainContainer = bottomSheetDialog.findViewById(R.id.mainContainer);
                     LinearLayout bottomContainer =
                             bottomSheetDialog.findViewById(R.id.bottomContainer);
-                    String firstText = "";
-                    String secondText = "";
+
                     if (textViewGroups != null) {
-                        firstText = textViewGroups[0].getText();
-                        secondText = textViewGroups[1].getText();
+                        firstText[0] = textViewGroups[0].getText();
+                        secondText[0] = textViewGroups[1].getText();
                     }
                     textViewGroups = new TextViewGroup[2];
                     textViewGroups[0] =
@@ -192,10 +305,10 @@ public class DexFragment extends BaseFragment {
                                     bottomSheetDialog.findViewById(R.id.second_option),
                                     getActivity(),
                                     monsList);
-                    textViewGroups[0].getAutoCompleteTextView().setText(firstText);
-                    textViewGroups[1].getAutoCompleteTextView().setText(secondText);
+                    textViewGroups[0].getAutoCompleteTextView().setText(firstText[0]);
+                    textViewGroups[1].getAutoCompleteTextView().setText(secondText[0]);
 
-                    if (UtilsCollection.indexOfIgnoreCase(monsList, firstText) != -1) {
+                    if (UtilsCollection.indexOfIgnoreCase(monsList, firstText[0]) != -1) {
                         textViewGroups[1].getTextInputLayout().setEnabled(true);
                     }
 
@@ -264,7 +377,7 @@ public class DexFragment extends BaseFragment {
                                         if (selectedTypes.size() >= 2) {
                                             Toast.makeText(
                                                             mContext,
-                                                            "You can only choose up to two types.",
+                                                            R.string.you_can_only_choose_up_to_two_types,
                                                             Toast.LENGTH_SHORT)
                                                     .show();
                                             chip.setChecked(false);
@@ -375,15 +488,17 @@ public class DexFragment extends BaseFragment {
                                                     textViewGroup.getText())))) {
                                         textViewGroup
                                                 .getTextInputLayout()
-                                                .setError("Invalid creature");
+                                                .setError(getString(R.string.invalid_creature));
                                         return;
                                     }
                                 }
+                                firstText[0] = textViewGroups[0].getText();
+                                secondText[0] = textViewGroups[1].getText();
 
                                 monsLayout.removeAllViews();
                                 bottomSheetDialog.cancel();
 
-                                startCalculations(true);
+                                startCalculations();
                             });
 
                     bottomSheetDialog.show();
@@ -395,7 +510,7 @@ public class DexFragment extends BaseFragment {
         isLoading = true;
         new Thread(
                 () -> {
-                    ArrayList<View> views =
+                    ArrayList<View> views2 =
                             MonDownloader.searchMons(
                                     monsLayout,
                                     monsList,
@@ -403,7 +518,7 @@ public class DexFragment extends BaseFragment {
                     getActivity()
                             .runOnUiThread(
                                     () -> {
-                                        for (View view : views) monsLayout.addView(view);
+                                        for (View view : views2) monsLayout.addView(view);
                                         isLoading = false;
                                     });
                 })
@@ -411,181 +526,156 @@ public class DexFragment extends BaseFragment {
     }
 
     private void startCalculations() {
-        startCalculations(false);
-    }
-
-    private void startCalculations(boolean reset) {
-
         fresh = false;
+        isCalculating = true;
 
-        if (reset) {
-            savedState = new LoopState();
-            skipHeadList = new ArrayList<>();
-            skipBodyList = new ArrayList<>();
-        }
-
-        final View[] lastView = new View[1];
-
+        savedState = new LoopState();
+        skipHeadList = new ArrayList<>();
+        skipBodyList = new ArrayList<>();
+        views.clear();
         amount = 0;
+        pauseLoading = false;
+        creaturePairs = new ArrayList<>();
+        singleSelected = -1;
 
-        ArrayList<PokemonCollection> headList =
+        headList =
                 PokemonData.getInstance().getPokemonCollections();
-        ArrayList<PokemonCollection> bodyList =
+        bodyList =
                 PokemonData.getInstance().getPokemonCollections();
 
-        int singleSelected = -1;
-
-        if (!textViewGroups[0].getText().equals("") && !textViewGroups[1].getText().equals("")) {
-            PokemonCollection newHead = headList.get(UtilsCollection.indexOfIgnoreCase(monsList, textViewGroups[0].getText()));
-            PokemonCollection newBody = bodyList.get(UtilsCollection.indexOfIgnoreCase(monsList, textViewGroups[1].getText()));
+        if (!firstText[0].equals("") && !secondText[0].equals("")) {
+            int newHeadIndex = UtilsCollection.indexOfIgnoreCase(monsList, firstText[0]);
+            int newBodyIndex = UtilsCollection.indexOfIgnoreCase(monsList, secondText[0]);
+            PokemonCollection newHead;
+            PokemonCollection newBody;
+            if (!(newHeadIndex > 0 && newBodyIndex > 0))
+                return;
+            newHead = headList.get(newHeadIndex);
+            newBody = bodyList.get(newBodyIndex);
 
             if (newHead == newBody) {
-                MonDownloader.showBottomSheetDialog(mContext, monsList, UtilsCollection.capitalizeFirstLetter(textViewGroups[0].getText()), UtilsCollection.capitalizeFirstLetter(textViewGroups[1].getText()), null, false);
+                MonDownloader.showBottomSheetDialog(mContext, monsList, UtilsCollection.capitalizeFirstLetter(firstText[0]), UtilsCollection.capitalizeFirstLetter(secondText[0]), null, false);
+                isCalculating = false;
+                pauseLoading = false;
                 return;
             }
 
             headList = new ArrayList<>(Arrays.asList(newHead, newBody));
             bodyList = headList;
-        } else if (!textViewGroups[0].getText().equals("")){
-            singleSelected = UtilsCollection.indexOfIgnoreCase(monsList, textViewGroups[0].getText());
+        } else if (!firstText[0].equals("")) {
+            singleSelected = UtilsCollection.indexOfIgnoreCase(monsList, firstText[0]);
         }
 
         if (savedState.headIndex == headList.size() - 1 && savedState.bodyIndex == bodyList.size() - 1)
             return;
 
-        List<CompletableFuture<Void>> asyncTasks = new ArrayList<>();
-
         progressIndicator.setVisibility(View.GONE);
 
-        headLoop:
-        for (int headIndex = savedState.headIndex; headIndex < headList.size(); headIndex++) {
-            PokemonCollection head = headList.get(headIndex);
+        populate(false);
+    }
 
-            savedState.headIndex = headIndex;
+    private void populate(boolean isAlreadyDefined) {
+        pauseLoading = true;
 
-            if (skipHeadList.contains(head)) continue;
+        CompletableFuture.runAsync(() -> {
+            boolean hasNext = true;
 
-            bodyLoop:
-            for (int bodyIndex = savedState.bodyIndex; bodyIndex < bodyList.size(); bodyIndex++) {
-                PokemonCollection body = bodyList.get(bodyIndex);
+            if (!isAlreadyDefined) {
 
-                savedState.bodyIndex = bodyIndex + 1;
+                int statType;
 
-                if (skipBodyList.contains(body) || (headIndex == bodyIndex && bodyList.size() <= 2 && headList.size() <= 2))
-                    continue;
-
-                if (singleSelected != -1)
-                    if (bodyIndex != singleSelected && headIndex != singleSelected)
-                        continue;
-
-                boolean isOk = true;
-                int[] combinedStats =
-                        InfoActivity.getCombinedStats(
-                                null,
-                                null,
-                                head.getStats(),
-                                body.getStats(),
-                                true);
-                String[] combinedTypes =
-                        InfoActivity.getCombinedTypes(
-                                null,
-                                null,
-                                head.getTypes().toArray(new String[2]),
-                                body.getTypes().toArray(new String[2]),
-                                true);
-
-                int i = 0;
-                for (int stat : combinedStats) {
-                    if (!(selectedRanges.get(i).getValues().get(0) <= stat
-                            && stat
-                            <= selectedRanges
-                            .get(i)
-                            .getValues()
-                            .get(1))) {
-                        isOk = false;
-                        boolean doBreak = false;
-
-                        if (getMaxValue(body.getStats(), 1, i)
-                                < selectedRanges
-                                .get(i)
-                                .getValues()
-                                .get(0)) {
-                            skipBodyList.add(body);
-                            doBreak = true;
-                        }
-                        if (getMaxValue(head.getStats(), 0, i)
-                                < selectedRanges
-                                .get(i)
-                                .getValues()
-                                .get(0)) {
-                            skipHeadList.add(head);
-                            continue headLoop;
-                        }
-                        if (doBreak) continue bodyLoop;
-                        break;
-                    }
-                    i++;
+                int selected = selectedSortOption;
+                if (selected == R.id.sort_total)
+                    statType = 6;
+                else if (selected == R.id.sort_hp)
+                    statType = 0;
+                else if (selected == R.id.sort_atk)
+                    statType = 1;
+                else if (selected == R.id.sort_def)
+                    statType = 2;
+                else if (selected == R.id.sort_spatk)
+                    statType = 3;
+                else if (selected == R.id.sort_spdef)
+                    statType = 4;
+                else if (selected == R.id.sort_speed)
+                    statType = 5;
+                else {
+                    statType = -1;
                 }
 
-                if (!isOk) continue;
+                combinationIterator = generateCreaturePairs();
+                if (statType == -1)
+                    sortedCreaturePairs = new PriorityQueue<>(
+                            (firstPair, secondPair) -> {
+                                int firstDex = firstPair.getHead().getId() * 420 + (firstPair.getBody().getId());
+                                int secondDex = secondPair.getHead().getId() * 420 + (secondPair.getBody().getId());
 
-                ArrayList<String> combinedTypesArray = new ArrayList<>(Arrays.asList(combinedTypes));
-                for (String type : selectedTypes)
-                    if (!combinedTypesArray.contains(type))
-                        continue bodyLoop;
-
-                amount++;
-                CompletableFuture<Void> asyncTask =
-                        CompletableFuture.runAsync(
-                                () -> lastView[0] = MonDownloader.addToGrid(
-                                        monsLayout,
-                                        monsList,
-                                        head.getName(),
-                                        body.getName(),
-                                        head.getId(),
-                                        body.getId()));
-
-                asyncTasks.add(asyncTask);
-
-                if (amount == MAX_AMOUNT) {
-                    break headLoop;
-                }
+                                return firstDex - secondDex;
+                            }
+                    );
+                else
+                    sortedCreaturePairs = new PriorityQueue<>(
+                            (firstPair, secondPair) -> {
+                                int[] firstResult = InfoActivity.getCombinedStats(
+                                        firstPair.getHead().getName(),
+                                        firstPair.getBody().getName(),
+                                        firstPair.getHead().getStats(),
+                                        firstPair.getBody().getStats()
+                                );
+                                int[] secondResult = InfoActivity.getCombinedStats(
+                                        secondPair.getHead().getName(),
+                                        secondPair.getBody().getName(),
+                                        secondPair.getHead().getStats(),
+                                        secondPair.getBody().getStats()
+                                );
+                                return secondResult[statType] - firstResult[statType];
+                            }
+                    );
             }
 
-            savedState.bodyIndex = 0;
-        }
+            while (combinationIterator.hasNext()) {
+                CreaturePair creaturePair = combinationIterator.next();
+                if (creaturePair != null)
+                    sortedCreaturePairs.offer(creaturePair);
+                else
+                    hasNext = false;
+            }
 
-        if (amount == MAX_AMOUNT) {
-            progressIndicator.setVisibility(View.VISIBLE);
-        } else {
-            progressIndicator.setVisibility(View.GONE);
-        }
+            int count = 0;
+            while (!sortedCreaturePairs.isEmpty() && count < MAX_AMOUNT) {
+                CreaturePair creaturePair = sortedCreaturePairs.poll();
+                count++;
+                MonDownloader.addToGrid(
+                        monsLayout,
+                        monsList,
+                        creaturePair.getHead().getName(),
+                        creaturePair.getBody().getName(),
+                        creaturePair.getHead().getId(),
+                        creaturePair.getBody().getId(),
+                        selectedSpritesType);
+            }
 
-        CompletableFuture<Void> allOf =
-                CompletableFuture.allOf(
-                        asyncTasks.toArray(new CompletableFuture[0]));
-        ArrayList<PokemonCollection> finalHeadList = headList;
-        allOf.thenRun(() -> {
+            if (hasNext) {
+                getActivity().runOnUiThread(() -> progressIndicator.setVisibility(View.VISIBLE));
+            } else {
+                getActivity().runOnUiThread(() -> {
+                    progressIndicator.setVisibility(View.GONE);
+
+                    for (int i = 0; i < gridCount - monsLayout.getChildCount(); i++) {
+                        LayoutInflater inflater = LayoutInflater.from(mContext);
+                        View view = inflater.inflate(R.layout.layout_mons, monsLayout, false);
+                        view.setVisibility(View.INVISIBLE);
+                        monsLayout.addView(view);
+                    }
+                });
+            }
+
+            amount = 0;
             isCalculating = false;
-            if (amount == 0 && monsLayout.getChildCount() == 0) {
-                MaterialTextView textView = new MaterialTextView(mContext);
-                textView.setText(R.string.no_creature_found);
-                textView.setPadding(UtilsCollection.intToPixel(8, mContext), 0, 0, 0);
-                monsLayout.addView(textView);
-            } else if (savedState.headIndex == finalHeadList.size() - 1 && savedState.bodyIndex == 0) {
-                lastView[0].post(() -> getActivity().runOnUiThread(() -> {
-                    if (monsLayout.getChildCount() < gridCount) {
-                        for (int i = 0; i < gridCount - monsLayout.getChildCount(); i++) {
-                            LayoutInflater inflater = LayoutInflater.from(mContext);
-                            View view = inflater.inflate(R.layout.layout_mons, monsLayout, false);
-                            view.setVisibility(View.INVISIBLE);
-                            monsLayout.addView(view);
-                        }
-                    }
-                }));
-            }
+            pauseLoading = false;
         });
     }
+
 
     private int getMaxValue(int[] stats, int type, int index) {
         switch (index) {
@@ -612,8 +702,138 @@ public class DexFragment extends BaseFragment {
         return 0;
     }
 
-    static class LoopState {
+    private Iterator<CreaturePair> generateCreaturePairs() {
+        return new Iterator<CreaturePair>() {
+            private int headIndex = savedState.headIndex;
+            private int bodyIndex = savedState.bodyIndex;
+
+            private void fixValues() {
+                if (bodyIndex == bodyList.size()) {
+                    bodyIndex = 0;
+                    headIndex++;
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                this.fixValues();
+                return headIndex < headList.size();
+            }
+
+            @Override
+            public CreaturePair next() {
+                this.fixValues();
+
+                PokemonCollection head = headList.get(headIndex);
+
+                if ((headIndex != singleSelected && bodyIndex != singleSelected) && singleSelected != -1) {
+                    headIndex++;
+                    bodyIndex = 0;
+                    return null;
+                }
+
+                if (skipHeadList.contains(head)) {
+                    headIndex++;
+                    bodyIndex = 0;
+                    return null;
+                }
+
+                PokemonCollection body = bodyList.get(bodyIndex);
+
+                if (skipBodyList.contains(body) || (headIndex == bodyIndex && bodyList.size() <= 2 && headList.size() <= 2)) {
+                    bodyIndex++;
+                    return null;
+                }
+
+                boolean isOk = true;
+                int[] combinedStats = InfoActivity.getCombinedStats(null, null, head.getStats(), body.getStats(), true);
+                String[] combinedTypes = InfoActivity.getCombinedTypes(null, null, head.getTypes().toArray(new String[2]), body.getTypes().toArray(new String[2]), true);
+
+                int i = 0;
+                for (int stat : combinedStats) {
+                    if (!(selectedRanges.get(i).getValues().get(0) <= stat
+                            && stat <= selectedRanges.get(i).getValues().get(1))) {
+                        isOk = false;
+                        boolean doBreak = false;
+
+                        if (getMaxValue(body.getStats(), 1, i) < selectedRanges.get(i).getValues().get(0)) {
+                            skipBodyList.add(body);
+                            doBreak = true;
+                        }
+                        if (getMaxValue(head.getStats(), 0, i) < selectedRanges.get(i).getValues().get(0)) {
+                            skipHeadList.add(head);
+                            headIndex++;
+                            bodyIndex = 0;
+                            return null;
+                        }
+                        if (doBreak) {
+                            bodyIndex++;
+                            return null;
+                        }
+                        break;
+                    }
+                    i++;
+                }
+
+                if (!isOk) {
+                    bodyIndex++;
+                    return null;
+                }
+
+                if (selectedTypes.size() > 0) {
+                    ArrayList<String> combinedTypesArray = new ArrayList<>(Arrays.asList(combinedTypes));
+                    if (!selectedTypesType) {
+                        for (String type : selectedTypes) {
+                            if (!combinedTypesArray.contains(type)) {
+                                bodyIndex++;
+                                return null;
+                            }
+                        }
+                    } else {
+                        for (String type : combinedTypesArray) {
+                            if (type == null) {
+                                if (selectedTypes.size() > 1) {
+                                    bodyIndex++;
+                                    return null;
+                                }
+                            } else if (!selectedTypes.contains(type)) {
+                                bodyIndex++;
+                                return null;
+                            }
+                        }
+                    }
+                }
+
+                CreaturePair creaturePair = new CreaturePair(head, body);
+
+                bodyIndex++;
+
+                return creaturePair;
+            }
+        };
+    }
+
+
+    private static class LoopState {
         int headIndex = 0;
         int bodyIndex = 0;
+    }
+
+    private static class CreaturePair {
+        private final PokemonCollection head;
+        private final PokemonCollection body;
+
+        public CreaturePair(PokemonCollection head, PokemonCollection body) {
+            this.head = head;
+            this.body = body;
+        }
+
+        public PokemonCollection getHead() {
+            return head;
+        }
+
+        public PokemonCollection getBody() {
+            return body;
+        }
     }
 }

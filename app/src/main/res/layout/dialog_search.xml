@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -14,8 +15,7 @@
             android:paddingHorizontal="16dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="16dp">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.bottomsheet.BottomSheetDragHandleView
                 android:layout_width="match_parent"
@@ -45,6 +45,30 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                android:layout_marginTop="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sprites_unstable"/>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/spritesGroup"
+                style="@style/MaterialButtonToggleGroup"
+                app:checkedButton="@id/toggle_any">
+
+                <Button
+                    style="@style/OutlinedButton"
+                    android:id="@+id/toggle_any"
+                    android:text="@string/any"/>
+
+                <Button
+                    style="@style/OutlinedButton"
+                    android:id="@+id/toggle_custom"
+                    android:text="@string/custom_only"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
             <LinearLayout
                 android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
@@ -54,8 +78,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Types"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                    android:text="@string/types"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"/>
 
                 <LinearLayout
                     android:visibility="invisible"
@@ -74,6 +98,23 @@
 
             </LinearLayout>
 
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/typesGroup"
+                style="@style/MaterialButtonToggleGroup"
+                app:checkedButton="@id/toggle_contains">
+
+                <Button
+                    style="@style/OutlinedButton"
+                    android:id="@+id/toggle_contains"
+                    android:text="@string/contains"/>
+
+                <Button
+                    style="@style/OutlinedButton"
+                    android:id="@+id/toggle_matches"
+                    android:text="@string/matches"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
             <com.google.android.material.chip.ChipGroup
                 android:layout_marginTop="4dp"
                 android:id="@+id/typesChipGroup"
@@ -90,8 +131,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Stats"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                    android:text="@string/stats"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"/>
 
             </LinearLayout>
 
@@ -108,8 +149,7 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.cardview.widget.CardView
-        style="@style/Widget.Material3.CardView.Outlined"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
@@ -118,8 +158,7 @@
             android:id="@+id/bottomContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -128,17 +167,16 @@
                 android:padding="8dp"
                 android:gravity="center">
 
-                <com.google.android.material.button.MaterialButton
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                     android:id="@+id/applyFilters"
-                    style="@style/Widget.Material3.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Apply filters"/>
+                    android:text="@string/apply_filters"/>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
 </RelativeLayout>

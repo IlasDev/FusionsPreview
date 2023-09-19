@@ -69,19 +69,19 @@ public class InfoAboutFragment extends Fragment {
 
         LinearLayout layout = view.findViewById(R.id.main_layout);
 
-        CategoryComponent typesCategory = new CategoryComponent("Types", R.drawable.ic_tag, layout);
+        CategoryComponent typesCategory = new CategoryComponent(getString(R.string.types), R.drawable.ic_tag, layout);
         typesCategory.addToView(inflater).setChips(typesData, true, getContext()).finish();
 
         CategoryComponent abilitiesCategory =
-                new CategoryComponent("Abilities", R.drawable.ic_awesome_filled, layout);
+                new CategoryComponent(getString(R.string.abilities), R.drawable.ic_awesome_filled, layout);
         abilitiesCategory.addToView(inflater).setChips(abilitiesData).finish();
 
         CategoryComponent hiddenAbilitiesCategory =
-                new CategoryComponent("Hidden abilities", R.drawable.ic_eye, layout);
+                new CategoryComponent(getString(R.string.hidden_abilities), R.drawable.ic_eye, layout);
         hiddenAbilitiesCategory.addToView(inflater).setChips(hiddenAbilitiesData).finish();
 
         ViewGroup statsView =
-                new CategoryComponent("Statistics", R.drawable.ic_stats, layout)
+                new CategoryComponent(getString(R.string.statistics), R.drawable.ic_stats, layout)
                         .addToView(inflater)
                         .hideDivider()
                         .finish()
