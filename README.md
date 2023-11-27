@@ -1,12 +1,32 @@
 ![](https://raw.githubusercontent.com/IlasDev/FusionsPreview/master/metadata/heading.png)
 
-# FusionsPreview
+<h3 align="center">
+  FusionsPreview
+</h3>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="400" />
+</p>
+
+<p align="center">
+	<a href="https://github.com/IlasDev/FusionsPreview/stargazers">
+		<img alt="Stargazers" src="https://img.shields.io/github/stars/IlasDev/FusionsPreview?style=for-the-badge&logo=starship&color=C9CBFF&logoColor=D9E0EE&labelColor=302D41"></a>
+	<a href="https://github.com/IlasDev/FusionsPreview/releases/latest">
+		<img alt="Releases" src="https://img.shields.io/github/release/IlasDev/FusionsPreview.svg?style=for-the-badge&logo=github&color=F2CDCD&logoColor=D9E0EE&labelColor=302D41"/></a>
+	<a href="https://github.com/IlasDev/FusionsPreview/issues">
+		<img alt="Issues" src="https://img.shields.io/github/issues/IlasDev/FusionsPreview?style=for-the-badge&logo=gitbook&color=B5E8E0&logoColor=D9E0EE&labelColor=302D41"></a>
+	<a href="https://github.com/IlasDev/FusionsPreview/blob/master/LICENSE">
+		<img alt="License" src="https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge&logo=discord&color=DDB6F2&logoColor=D9E0EE&labelColor=302D41"></a>
+  <br>
+  <br>
+  <img src="https://img.shields.io/badge/Java-ee99a0?style=for-the-badge&logo=openjdk&logoColor=black">
+  <img src="https://img.shields.io/badge/Android-a6da95?style=for-the-badge&logo=android&logoColor=black">
+</p>
 
 FusionsPreview is a free and open source tool for the game Pokémon Infinite Fusion for Android.
 
-![](https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg)
-![](https://ziadoua.github.io/m3-Markdown-Badges/badges/Java/java2.svg)
-![](https://raw.githubusercontent.com/ziadOUA/m3-Markdown-Badges/master/badges/LicenceGPLv3/licencepglv32.svg)
+<p align="center">
+</p>
 
 ### Screenshots
 
@@ -16,11 +36,7 @@ FusionsPreview is a free and open source tool for the game Pokémon Infinite Fus
 
 ### Downloads
 
-Google Play Store page might not be available. If it happens, it should be temporary.
-
-<a href="https://play.google.com/store/apps/details?id=com.gmail.ilasdeveloper.fusionspreview"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height=60px /></a>
-
-Alternatively you can download the app from the [**releases**](https://github.com/IlasDev/FusionsPreview/releases/latest) page.
+Download the app from the [**releases**](https://github.com/IlasDev/FusionsPreview/releases/latest) page.
 
 ### Features
 
