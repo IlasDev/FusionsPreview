@@ -32,6 +32,8 @@
 &nbsp;
 
 FusionsPreview is a free and open source tool for the game Pokémon Infinite Fusion for Android.
+<br>
+This is a small project, don't expect high activity or big features.
 
 <p align="center">
 </p>
@@ -75,7 +77,8 @@ Download the app from the [**releases**](https://github.com/IlasDev/FusionsPrevi
 
 ### 🚧 Known bugs
 
-None. If you encounter an issue let me know by opening an "Issue" on this repository.
+- Sprites are not automatically updated;
+- The author is always displayed as "Unknown".
 
 &nbsp;
 
