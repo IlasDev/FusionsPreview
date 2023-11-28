@@ -16,7 +16,7 @@
 	<a href="https://github.com/IlasDev/FusionsPreview/issues">
 		<img alt="Issues" src="https://img.shields.io/github/issues/IlasDev/FusionsPreview?style=for-the-badge&logo=gitbook&color=B5E8E0&logoColor=D9E0EE&labelColor=302D41"></a>
 	<a href="https://github.com/IlasDev/FusionsPreview/blob/master/LICENSE">
-		<img alt="License" src="https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge&logo=discord&color=DDB6F2&logoColor=D9E0EE&labelColor=302D41"></a>
+		<img alt="License" src="https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge&logo=bookstack&color=DDB6F2&logoColor=D9E0EE&labelColor=302D41"></a>
   <br>
   <br>
   <img src="https://img.shields.io/badge/Java-ee99a0?style=for-the-badge&logo=openjdk&logoColor=black">
